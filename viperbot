@@ -7,7 +7,7 @@
 viper_ver="v1.0"
 viper_dir=$HOME/viper
 viper_tmp=viper_tmp
-viper_url=http://viperbot.googlecode.com/svn/trunk
+viper_url=https://github.com/poppabear8883/ViperBot/raw/master/
 viper_eggurl=ftp://ftp.eggheads.org/pub/eggdrop/source/snapshot/
 viper_egg=eggdrop1.8-snapshot.tar.gz
 
@@ -198,17 +198,17 @@ viper_eggsetup(){
 
 viper_getbotnet(){
 	if [ -d $viper_dir ]; then
-		if [ ! -e $viper_dir/botnet ]; then
-			echo -e "\E[33mNOTE: Be sure to edit $viper_dir/botnet BEFORE adding your first bot.\033[0m"
-			echo -e "\E[33mYour first 2 bots that you add MUST match whats in the botnet file.\033[0m"
+		if [ ! -e $viper_dir/botnet.conf ]; then
+			echo -e "\E[33mNOTE: Be sure to edit $viper_dir/botnet.conf BEFORE adding your first bot.\033[0m"
+			echo -e "\E[33mYour first 2 bots that you add MUST match whats in the botnet.conf file.\033[0m"
       			echo -e "\E[33mYour botnet bots should use IPv4 Addresses, This should allow them to link without issues.\033[0m"
-      			echo -e "\E[33mIf you need help with this please come see us at #ServNX on Efnet or Freenode.\033[0m"
+      			echo -e "\E[33mIf you need help with this please come see us at #servshells on Efnet or Freenode.\033[0m"
 			echo " "
-			read -p "Where is your botnet file? (eg: $viper_url/botnet) " viperbotnet
-			viper_get $viperbotnet $viper_dir/botnet
+			read -p "Where is your botnet file? (eg: $viper_url/botnet.conf) " viperbotnet
+			viper_get $viperbotnet $viper_dir/botnet.conf
 		fi
-		if [ ! -e $viper_dir/botnet ]; then
-			viper_get $viper_url/botnet $viper_dir/botnet
+		if [ ! -e $viper_dir/botnet.conf ]; then
+			viper_get $viper_url/botnet $viper_dir/botnet.conf
 		fi
 	fi
 }
@@ -268,7 +268,7 @@ viper_conf(){
         echo listen '"'$viper_port'"' all >> $viper_conf
 
 	echo source viperbot.conf >> $viper_conf
-	echo source botnet >> $viper_conf
+	echo source botnet.conf >> $viper_conf
 	chmod 666 $viper_conf
 
 	if [ `pwd` == "$viper_dir" ]; then
