@@ -33,5 +33,5 @@ chmod +x viperbot
 
 ./viperbot
 
-
+Testing IRC Service Bot
 
