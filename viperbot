@@ -320,8 +320,6 @@ viper_new(){
 		echo -e "\E[31mERROR: Directory does not exist! Make sure ViperBot was installed correctly, Make sure $viper_dir exists!\033[0m"
 		exit $?
 	else
-		viper_getcore
-		viper_getbotnet
 		viper_conf
 	fi
 }
