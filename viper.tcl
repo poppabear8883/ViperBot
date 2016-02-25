@@ -110,7 +110,7 @@ proc auth_msg {} {
 
 proc auth_owner {nick host hand arg} {
 	foreach {pass} [split $arg] {break}
-	if {![string equal $pass $::botnet_pass] || ![string equal $nick $::owner]} {
+	if {![string equal $pass $::owner_pass] || ![string equal $nick $::owner]} {
 		return 0
 	} elseif {![validuser $::owner] && [validchan $::home_chan] && [onchan $::owner $::home_chan] && [ishub]} {
 		putserv "NOTICE $::owner :Password ACCEPTED!"
@@ -124,7 +124,7 @@ proc add_owner {nick} {
 		append o_host [getchanhost $nick $::home_chan]
 
 		adduser $nick $o_host
-		setuser $nick PASS $::botnet_pass
+		setuser $nick PASS $::owner_pass
 		chattr $nick +nmop
 		save
 		putlog "$nick was added as the Owner!"
@@ -155,12 +155,6 @@ proc botnet_check {} {
 		if {[matchbotattr $::ahubnick l] || ![matchbotattr $::ahubnick gs]} {
 			botattr $::ahubnick +gs-l
 		}
-		if {![passwdok $::hubnick $::botnet_pass]} {
-			setuser $::hubnick PASS $::botnet_pass
-		}
-		if {![passwdok $::ahubnick $::botnet_pass]} {
-			setuser $::ahubnick PASS $::botnet_pass
-		}
 		foreach b [userlist b] {
 			if {$b != $::hubnick && $b != $::ahubnick} {
 				if {[matchbotattr $b l] || ![matchbotattr $b gs]} {
@@ -168,9 +162,6 @@ proc botnet_check {} {
 				}
 				if {[matchattr $b d] || ![matchattr $b o] || ![matchattr $b f]} {
 					chattr $b -d+fo
-				}
-				if {![passwdok $b $::botnet_pass]} {
-					setuser $b PASS $::botnet_pass
 				}
 			}
 		}
@@ -187,16 +178,10 @@ proc botnet_check {} {
 		if {[matchattr $::hubnick d] || ![matchattr $::hubnick o] || ![matchattr $::hubnick f]} {
 			chattr $::hubnick -d+of
 		}
-		if {![passwdok $::hubnick $::botnet_pass]} {
-			setuser $::hubnick PASS $::botnet_pass
-		}
 		foreach b [userlist b] {
 			if {$b != $::ahubnick && $b != $::hubnick} {
 				if {[matchbotattr $b l]} {
 					botattr $b -l
-				}
-				if {![passwdok $b $::botnet_pass]} {
-					setuser $b PASS $::botnet_pass
 				}
 			}
 		}
@@ -218,12 +203,6 @@ proc botnet_check {} {
 		}
 
 		if {[matchattr $::ahubnick d] || ![matchattr $::ahubnick o] || ![matchattr $::ahubnick f]} {chattr $::ahubnick -d+fo}
-		if {![passwdok $::hubnick $::botnet_pass]} {
-			setuser $::hubnick PASS $::botnet_pass
-		}
-		if {![passwdok $::ahubnick $::botnet_pass]} {
-			setuser $::ahubnick PASS $::botnet_pass
-		}
 	}
 	save
 }
@@ -340,8 +319,7 @@ proc proc_dcc_addleaf {hand idx arg} {
 			append hosts $full_host
 		}
 	        addbot $leafnick $leafip:$leafport
-	        setuser $leafnick PASS $::botnet_pass
-		setuser $leafnick HOSTS $hosts
+			setuser $leafnick HOSTS $hosts
 	        chattr $leafnick +of
 	        botattr $leafnick +gs
         	link $leafnick
