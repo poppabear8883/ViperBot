@@ -228,6 +228,10 @@ viper_getcore(){
 	fi
 }
 
+# Todo: Create botnet.conf file dynamically. Ask enduser if they currently have a botnet.conf they want to use.
+# Todo: Ask enduser if they are creating hub, althub or leaf bot
+# Todo: touch botnick.user ??
+# Todo: Auto addleaf if enduser is creating a leaf bot ?
 viper_conf(){
 	read -p "ViperBot Nickname: " viper_nick
 	viper_conf=$viper_dir/$viper_nick.conf
