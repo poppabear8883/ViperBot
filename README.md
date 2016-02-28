@@ -1,6 +1,11 @@
 ViperBot
 ========
 
+Notice: We are currently migrating to Python.
+----------------------------------------------
+
+So expect everything to be broken until further notice!
+--------------------------------------------------------
 ViperBot is an IRC Bot based from Eggdrop1.8
 
 No Official Release Yet!
@@ -25,12 +30,5 @@ Features in Development:
 
 GETTING STARTED WITH VIPERBOT
 ----------------------------
-Issue these commands on your server.
 
-wget https://github.com/poppabear8883/ViperBot/raw/master/viperbot
-
-chmod +x viperbot
-
-./viperbot
-
-
+### Nothing Yet! ###

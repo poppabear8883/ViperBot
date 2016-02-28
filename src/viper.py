@@ -51,11 +51,6 @@ def build():
     if os.path.exists(conf.VIPER_DIRECTORY):
         # Viper Install Directory
         os.chdir(conf.VIPER_DIRECTORY)
-        os.system('cp ~/viperbot.py ' + 'viperbot')
-
-        # download src files
-        download(conf.VIPER_SRC_URL + '/text/motd', 'text/motd')
-        download(conf.VIPER_SRC_URL + '/text/banner', 'text/banner')
 
         # cleanup files
         os.remove('eggdrop.conf')
@@ -73,10 +68,14 @@ def build():
         # create symlinks
         os.system('ln -s viperbot-' + conf.VIPER_VERSION + ' viper')
 
+    update()
+
     # Home Directory
     os.chdir(conf.HOME)
 
-    update()
+    print 'Install Successful ...'
+    print ' '
+    print 'Install Directory: ' + conf.VIPER_DIRECTORY
 
 def update():
     conf_py = conf.VIPER_DIRECTORY + '/conf.py'
@@ -92,6 +91,8 @@ def update():
 
     print 'Updating core ...'
     if os.path.exists(conf.VIPER_DIRECTORY):
+        os.chdir(conf.VIPER_DIRECTORY)
+
         if os.path.exists(tcl):
             if os.path.exists(tcl_old):
                 os.remove(tcl_old)
@@ -121,6 +122,18 @@ def update():
                 os.remove(conf_py_old)
             os.rename(conf_py, conf_py_old)
         download(conf.VIPER_SRC_URL + '/src/conf.py', conf_py)
+
+        if os.path.exists(conf.VIPER_SRC_URL + '/text/motd'):
+            if os.path.exists(conf.VIPER_SRC_URL + '/text/motd.old'):
+                os.remove(conf.VIPER_SRC_URL + '/text/motd.old')
+            os.rename(conf.VIPER_SRC_URL + '/text/motd', conf.VIPER_SRC_URL + '/text/motd.old')
+        download(conf.VIPER_SRC_URL + '/text/motd', 'text/motd')
+
+        if os.path.exists(conf.VIPER_SRC_URL + '/text/banner'):
+            if os.path.exists(conf.VIPER_SRC_URL + '/text/banner.old'):
+                os.remove(conf.VIPER_SRC_URL + '/text/banner.old')
+            os.rename(conf.VIPER_SRC_URL + '/text/banner', conf.VIPER_SRC_URL + '/text/banner.old')
+        download(conf.VIPER_SRC_URL + '/text/banner', 'text/banner')
 
 '''
     HELPERS

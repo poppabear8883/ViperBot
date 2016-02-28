@@ -7,10 +7,8 @@ viperbot.py (c) 2016 Poppabear @ Freenode Irc Network
 import getopt
 import os
 import sys
-
-from src import viper
-from src import conf
-
+import conf
+import viper
 
 # Main program entry point
 def main(argv):
@@ -27,8 +25,6 @@ def main(argv):
     for opt, arg in opts:
         if opt == '-h':
             help()
-        elif opt == '-i':
-            viper_install()
         elif opt == '-n':
             viper_new(arg)
         elif opt == '-u':
@@ -54,34 +50,12 @@ def banner():
 
 
 def help():
-    print '-i'
-    print '  Installs ViperBot for the first time'
     print '-n <hub,ahub,leaf>'
     print '  Creates a new bot'
     print '-u <filename>'
     print '  Updates a file from the remote repository'
     print '-s <botnick>'
     print '  Starts a bot. <botnick> is Case Sensitive'
-
-
-def viper_install():
-    if os.path.exists(conf.VIPER_DIRECTORY):
-        print 'Viperbot is already installed.'
-        print ' '
-
-        reinstall = raw_input("Would you like to reinstall ViperBot? (y/N): ")
-        if reinstall == 'y' or reinstall == 'Y':
-            viper_reinstall()
-        else:
-            # exit script
-            sys.exit(0)
-
-    viper.build()
-
-def viper_reinstall():
-    os.rename(conf.VIPER_DIRECTORY, conf.HOME + '/viper_old')
-    viper_install()
-
 
 def viper_new(type='leaf'):
     print 'Creating new ' + type + ' ...'
