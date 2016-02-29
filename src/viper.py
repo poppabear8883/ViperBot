@@ -1,9 +1,7 @@
 import os
 import tarfile
 import urllib2
-
 import conf
-
 
 def build():
     print 'Installing ...'
@@ -61,7 +59,7 @@ def build():
         os.system('rm -rf doc')
 
         # rename files
-        os.rename('eggdrop-' + conf.VIPER_VERSION, 'viperbot-' + conf.VIPER_VERSION)
+        os.rename('eggdrop-1.8.0', 'viperbot-' + conf.VIPER_VERSION)
         os.rename('eggdrop.crt', 'viper.crt')
         os.rename('eggdrop.key', 'viper.key')
 
