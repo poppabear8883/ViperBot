@@ -1,3 +1,10 @@
+"""
+viper.py (c) 2016 Poppabear @ Freenode Irc Network
+
+WARNING:
+THIS FILE SHOULD NOT BE EDITED BY THE USER!
+EDITING THIS FILE COULD CORRUPT YOUR VIPERBOT INSTALL.
+"""
 import os
 import tarfile
 import urllib2
@@ -76,6 +83,7 @@ def build():
     print 'Install Directory: ' + conf.VIPER_DIRECTORY
 
 def update():
+    # todo: Create an array of paths in conf.py, and loop ...
     conf_py = conf.VIPER_DIRECTORY + '/conf.py'
     conf_py_old = conf.VIPER_DIRECTORY + '/conf.py.old'
     tcl = conf.VIPER_DIRECTORY + '/viper.tcl'
@@ -136,6 +144,13 @@ def update():
 '''
     HELPERS
 '''
+def internet_on():
+    try:
+        response=urllib2.urlopen('http://8.8.8.8',timeout=1)
+        return True
+    except urllib2.URLError as err: pass
+    return False
+
 def download(url, filename):
     u = urllib2.urlopen(url)
     f = open(filename, 'wb')
