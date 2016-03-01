@@ -12,16 +12,8 @@ import conf
 
 def build():
     print 'Installing ...'
-    # Home Directory
-    os.chdir(conf.HOME)
-
-    download(conf.EGG_SRC_URL, conf.HOME + 'eggdrop18.tar.gz')
-    extract(conf.HOME + 'eggdrop18.tar.gz')
-    os.remove(conf.HOME + 'eggdrop18.tar.gz')
-    os.system('mv ' + conf.HOME + "eggdrop-* " + conf.VIPER_TMP_DIRECTORY)
-
-    # TMP Directory
-    os.chdir(conf.VIPER_TMP_DIRECTORY)
+    # CD into ViperBot SRC Directory
+    os.chdir(conf.VIPER_SRC_DIRECTORY)
 
     print ' '
     print '***************************************************************************'
@@ -48,10 +40,6 @@ def build():
     if disable_tls != 'y' or disable_tls != 'Y':
         print 'Generating SSL Certificates ...'
         os.system('make sslcert DEST=' + conf.VIPER_DIRECTORY)
-
-    if os.path.exists(conf.VIPER_TMP_DIRECTORY):
-        os.chdir(conf.HOME)
-        os.system('rm -rf ' + conf.VIPER_TMP_DIRECTORY)
 
     if os.path.exists(conf.VIPER_DIRECTORY):
         # Viper Install Directory
