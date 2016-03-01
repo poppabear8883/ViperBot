@@ -26,7 +26,7 @@ def build():
     print ' '
 
     disable_tls = raw_input('Would you like to disable TLS? (y/N): ')
-    print 'Configuring ...'
+    print 'Configuring ...' + ' log: ' + os.getcwd()
     if disable_tls == 'y' or disable_tls == 'Y':
         os.system('./configure --disable-tls')
     else:
@@ -35,99 +35,25 @@ def build():
     print 'Building ...'
     os.system('make config')
     os.system('make static')
-    os.system('make install DEST=' + conf.VIPER_DIRECTORY)
+    os.system('make install DEST=' + conf.VIPER_INSTALL_DIRECTORY)
 
     if disable_tls != 'y' or disable_tls != 'Y':
         print 'Generating SSL Certificates ...'
-        os.system('make sslcert DEST=' + conf.VIPER_DIRECTORY)
+        os.system('make sslcert DEST=' + conf.VIPER_INSTALL_DIRECTORY)
 
-    if os.path.exists(conf.VIPER_DIRECTORY):
-        # Viper Install Directory
-        os.chdir(conf.VIPER_DIRECTORY)
-
-        # cleanup files
-        os.remove('eggdrop.conf')
-        os.remove('README')
-        os.remove('eggdrop')
-
-        # cleanup directories
-        os.system('rm -rf doc')
-
-        # rename files
-        os.rename('eggdrop-1.8.0', 'viperbot-' + conf.VIPER_VERSION)
-        os.rename('eggdrop.crt', 'viper.crt')
-        os.rename('eggdrop.key', 'viper.key')
-
-        # create symlinks
-        os.system('ln -s viperbot-' + conf.VIPER_VERSION + ' viper')
-
-    update()
+    if os.path.exists(conf.VIPER_INSTALL_DIRECTORY):
+        os.system('cp __init__.py ' + conf.VIPER_INSTALL_DIRECTORY)
+        os.system('cp viper.py ' + conf.VIPER_INSTALL_DIRECTORY)
+        os.system('cp viperbot.py ' + conf.VIPER_INSTALL_DIRECTORY)
+        os.system('cp conf.py ' + conf.VIPER_INSTALL_DIRECTORY)
+        os.system('cp viper.py ' + conf.VIPER_INSTALL_DIRECTORY)
 
     # Home Directory
     os.chdir(conf.HOME)
 
     print 'Install Successful ...'
     print ' '
-    print 'Install Directory: ' + conf.VIPER_DIRECTORY
-
-def update():
-    # todo: Create an array of paths in conf.py, and loop ...
-    conf_py = conf.VIPER_DIRECTORY + '/conf.py'
-    conf_py_old = conf.VIPER_DIRECTORY + '/conf.py.old'
-    tcl = conf.VIPER_DIRECTORY + '/viper.tcl'
-    tcl_old = conf.VIPER_DIRECTORY + '/viper.tcl.old'
-    botnet = conf.VIPER_DIRECTORY + '/botnet.conf'
-    botnet_old = conf.VIPER_DIRECTORY + '/botnet.conf.old'
-    vb_conf = conf.VIPER_DIRECTORY + '/viperbot.conf'
-    vb_conf_old = conf.VIPER_DIRECTORY + '/viperbot.conf.old'
-    vb_py = conf.VIPER_DIRECTORY + '/viperbot.py'
-    vb_py_old = conf.VIPER_DIRECTORY + '/viperbot.py.old'
-
-    print 'Updating core ...'
-    if os.path.exists(conf.VIPER_DIRECTORY):
-        os.chdir(conf.VIPER_DIRECTORY)
-
-        if os.path.exists(tcl):
-            if os.path.exists(tcl_old):
-                os.remove(tcl_old)
-            os.rename(tcl, tcl_old)
-        download(conf.VIPER_SRC_URL + '/scripts/viper.tcl', tcl)
-
-        if os.path.exists(botnet):
-            if os.path.exists(botnet_old):
-                os.remove(botnet_old)
-            os.rename(botnet, botnet_old)
-        download(conf.VIPER_SRC_URL + '/configs/botnet.conf', botnet)
-
-        if os.path.exists(vb_conf):
-            if os.path.exists(vb_conf_old):
-                os.remove(vb_conf_old)
-            os.rename(vb_conf, vb_conf_old)
-        download(conf.VIPER_SRC_URL + '/configs/viperbot.conf', vb_conf)
-
-        if os.path.exists(vb_py):
-            if os.path.exists(vb_py_old):
-                os.remove(vb_py_old)
-            os.rename(vb_py, vb_py_old)
-        download(conf.VIPER_SRC_URL + '/viperbot.py', vb_py)
-
-        if os.path.exists(conf_py):
-            if os.path.exists(conf_py_old):
-                os.remove(conf_py_old)
-            os.rename(conf_py, conf_py_old)
-        download(conf.VIPER_SRC_URL + '/src/conf.py', conf_py)
-
-        if os.path.exists(conf.VIPER_SRC_URL + '/text/motd'):
-            if os.path.exists(conf.VIPER_SRC_URL + '/text/motd.old'):
-                os.remove(conf.VIPER_SRC_URL + '/text/motd.old')
-            os.rename(conf.VIPER_SRC_URL + '/text/motd', conf.VIPER_SRC_URL + '/text/motd.old')
-        download(conf.VIPER_SRC_URL + '/text/motd', 'text/motd')
-
-        if os.path.exists(conf.VIPER_SRC_URL + '/text/banner'):
-            if os.path.exists(conf.VIPER_SRC_URL + '/text/banner.old'):
-                os.remove(conf.VIPER_SRC_URL + '/text/banner.old')
-            os.rename(conf.VIPER_SRC_URL + '/text/banner', conf.VIPER_SRC_URL + '/text/banner.old')
-        download(conf.VIPER_SRC_URL + '/text/banner', 'text/banner')
+    print 'Install Directory: ' + conf.VIPER_INSTALL_DIRECTORY
 
 '''
     HELPERS

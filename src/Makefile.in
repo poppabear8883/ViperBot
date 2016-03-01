@@ -292,18 +292,18 @@ modtest: conftest
 
 sslcert:
 	@if test ! -d $(DEST); then \
-		echo "You haven't installed eggdrop yet, or you installed using the DEST= flag.";\
+		echo "You haven't installed viperbot yet, or you installed using the DEST= flag.";\
 		echo "Please run \"make install\" first.";\
 		echo "If you have already run \"make install\" and used the DEST= option, please use it again here";\
 		exit 1;\
 	fi
-	@if test -f $(DEST)/eggdrop.key; then \
-		cp $(DEST)/eggdrop.key $(DEST)/eggdrop.key~old; \
+	@if test -f $(DEST)/viperbot.key; then \
+		cp $(DEST)/viperbot.key $(DEST)/viperbot.key~old; \
 	fi
-	@if test -f $(DEST)/eggdrop.crt; then \
-		cp $(DEST)/eggdrop.crt $(DEST)/eggdrop.crt~old; \
+	@if test -f $(DEST)/viperbot.crt; then \
+		cp $(DEST)/viperbot.crt $(DEST)/viperbot.crt~old; \
 	fi
-	@openssl req -new -x509 -nodes -days 365 -keyout $(DEST)/eggdrop.key -out $(DEST)/eggdrop.crt -config ssl.conf; \
+	@openssl req -new -x509 -nodes -days 365 -keyout $(DEST)/viperbot.key -out $(DEST)/viperbot.crt -config ssl.conf; \
 
 install: ainstall
 
@@ -394,8 +394,8 @@ install-modules:
 	fi
 
 install-data:
-	@if test ! -f $(DEST)/eggdrop.conf; then \
-		$(INSTALL_DATA) $(srcdir)/eggdrop.conf $(DEST)/; \
+	@if test ! -f $(DEST)/viperbot.conf; then \
+		$(INSTALL_DATA) $(srcdir)/viperbot.conf $(DEST)/; \
 	fi
 	@if test ! -d $(DEST)/logs; then \
 		echo "Creating 'logs' subdirectory."; \
@@ -480,7 +480,7 @@ install-end:
 	@echo "during the make install process, use the same DEST= option here."
 	@echo ""
 	@echo "You MUST ensure that you edit/verify your configuration file."
-	@echo "An example configuration file, eggdrop.conf, is distributed with Eggdrop."
+	@echo "An example configuration file, viperbot.conf, is distributed with Eggdrop."
 	@echo ""
 	@echo "Remember to change directory to $(DEST) before you proceed."
 	@echo ""

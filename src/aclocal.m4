@@ -873,10 +873,10 @@ dnl
 dnl Test for executable suffix and define Eggdrop's executable name accordingly.
 dnl
 AC_DEFUN([EGG_EXEEXT], [
-  EGGEXEC="eggdrop"
+  EGGEXEC="viperbot"
   AC_EXEEXT
   if test "x$EXEEXT" != x; then
-    EGGEXEC="eggdrop${EXEEXT}"
+    EGGEXEC="viperbot${EXEEXT}"
   fi
   AC_SUBST(EGGEXEC)
 ])
