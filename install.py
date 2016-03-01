@@ -36,10 +36,10 @@ def banner():
     print ' '
 
 def viper_install():
-    if not viper.internet_on():
-        print 'Error: You DO NOT seem to be connected to the internet.'
-        print 'An internet connection is required to install ViperBot.'
-        sys.exit(0)
+    # if not viper.internet_on():
+    #     print 'Error: You DO NOT seem to be connected to the internet.'
+    #     print 'An internet connection is required to install ViperBot.'
+    #     sys.exit(0)
 
     if os.path.exists(conf.VIPER_DIRECTORY):
         print 'Viperbot is already installed.'
