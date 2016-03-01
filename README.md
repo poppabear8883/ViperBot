@@ -6,7 +6,9 @@ Notice: We are currently migrating to Python.
 
 So expect everything to be broken until further notice!
 --------------------------------------------------------
+
 ViperBot is an IRC Bot based from Eggdrop1.8
+------------------------------------------------------------------------------
 
 No Official Release Yet!
 
@@ -32,3 +34,17 @@ GETTING STARTED WITH VIPERBOT
 ----------------------------
 
 ### Nothing Yet! ###
+
+Credits & Copyrights
+====================
+- Credit goes to all authors and contributors to the Eggheads Community & Development Team
+- The core of ViperBot is Eggdrop. ViperBots features are built on TOP of the eggdrop src code.
+
+> ViperBot1.0
+-------------
+- Copyright (C) 2012 - 2016 ServNX Development Team
+
+> Eggdrop1.8.0
+--------------
+- Copyright (C) 1997 Robey Pointer
+- Copyright (C) 1999 - 2016 Eggheads Development Team
