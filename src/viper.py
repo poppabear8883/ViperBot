@@ -146,7 +146,7 @@ def update():
 '''
 def internet_on():
     try:
-        response=urllib2.urlopen('http://8.8.8.8',timeout=1)
+        response=urllib2.urlopen('http://173.194.206.102',timeout=1)
         return True
     except urllib2.URLError as err: pass
     return False
