@@ -303,7 +303,7 @@ sslcert:
 	@if test -f $(DEST)/viperbot.crt; then \
 		cp $(DEST)/viperbot.crt $(DEST)/viperbot.crt~old; \
 	fi
-	@openssl req -new -x509 -nodes -days 365 -keyout $(DEST)/viperbot.key -out $(DEST)/viperbot.crt -config ssl.conf; \
+	@openssl req -new -x509 -nodes -days 365 -keyout $(DEST)/viperbot.key -out $(DEST)/viperbot.crt -config configs/ssl.conf; \
 
 install: ainstall
 
@@ -394,8 +394,19 @@ install-modules:
 	fi
 
 install-data:
-	@if test ! -f $(DEST)/viperbot.conf; then \
-		$(INSTALL_DATA) $(srcdir)/viperbot.conf $(DEST)/; \
+    @if test ! -d $(DEST)/configs; then \
+		echo "Creating 'configs' subdirectory."; \
+		$(top_srcdir)/misc/mkinstalldirs $(DEST)/configs >/dev/null; \
+		$(INSTALL_DATA) $(srcdir)/configs/CONTENTS $(DEST)/configs/; \
+	fi;
+	@if test ! -f $(DEST)/configs/viperbot.conf; then \
+		$(INSTALL_DATA) $(srcdir)/configs/viperbot.conf $(DEST)/; \
+	fi
+	@if test ! -f $(DEST)/configs/global.conf; then \
+		$(INSTALL_DATA) $(srcdir)/configs/global.conf $(DEST)/; \
+	fi
+	@if test ! -f $(DEST)/configs/ssl.conf; then \
+		$(INSTALL_DATA) $(srcdir)/configs/ssl.conf $(DEST)/; \
 	fi
 	@if test ! -d $(DEST)/logs; then \
 		echo "Creating 'logs' subdirectory."; \
