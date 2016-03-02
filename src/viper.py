@@ -6,6 +6,7 @@ THIS FILE SHOULD NOT BE EDITED BY THE USER!
 EDITING THIS FILE COULD CORRUPT YOUR VIPERBOT INSTALL.
 """
 import os
+import sys
 import tarfile
 import urllib2
 import conf
@@ -54,6 +55,7 @@ def build():
     print 'Install Successful ...'
     print ' '
     print 'Install Directory: ' + conf.VIPER_INSTALL_DIRECTORY
+    sys.exit(0)
 
 '''
     HELPERS

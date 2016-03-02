@@ -60,8 +60,11 @@ def viper_install():
         sys.exit(0)
 
 def viper_reinstall():
+    if os.path.exists(conf.HOME + '/viperbot_old'):
+        os.system('rm -rf ' + conf.HOME + '/viperbot_old')
+
     os.rename(conf.VIPER_INSTALL_DIRECTORY, conf.HOME + '/viperbot_old')
-    viper_install()
+    viper.build()
 
 
 if __name__ == "__main__":
