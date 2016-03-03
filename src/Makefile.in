@@ -394,24 +394,25 @@ install-modules:
 	fi
 
 install-data:
-    @if test ! -d $(DEST)/configs; then \
+	@if test ! -d $(DEST)/configs; then \
 		echo "Creating 'configs' subdirectory."; \
 		$(top_srcdir)/misc/mkinstalldirs $(DEST)/configs >/dev/null; \
-		$(INSTALL_DATA) $(srcdir)/configs/CONTENTS $(DEST)/configs/; \
 	fi;
 	@if test ! -f $(DEST)/configs/viperbot.conf; then \
-		$(INSTALL_DATA) $(srcdir)/configs/viperbot.conf $(DEST)/; \
+		$(INSTALL_DATA) $(srcdir)/configs/viperbot.conf $(DEST)/configs/; \
 	fi
 	@if test ! -f $(DEST)/configs/global.conf; then \
-		$(INSTALL_DATA) $(srcdir)/configs/global.conf $(DEST)/; \
+		$(INSTALL_DATA) $(srcdir)/configs/global.conf $(DEST)/configs/; \
 	fi
 	@if test ! -f $(DEST)/configs/ssl.conf; then \
-		$(INSTALL_DATA) $(srcdir)/configs/ssl.conf $(DEST)/; \
+		$(INSTALL_DATA) $(srcdir)/configs/ssl.conf $(DEST)/configs/; \
+	fi
+	@if test ! -f $(DEST)/configs/botnet.conf; then \
+		$(INSTALL_DATA) $(srcdir)/configs/botnet.conf $(DEST)/configs/; \
 	fi
 	@if test ! -d $(DEST)/logs; then \
 		echo "Creating 'logs' subdirectory."; \
 		$(top_srcdir)/misc/mkinstalldirs $(DEST)/logs >/dev/null; \
-		$(INSTALL_DATA) $(srcdir)/logs/CONTENTS $(DEST)/logs/; \
 	fi;
 	@if test ! -d $(DEST)/text; then \
 		echo "Creating 'text' subdirectory."; \
@@ -476,7 +477,6 @@ install-filesys:
 	fi
 
 install-doc:
-	@$(INSTALL_DATA) $(srcdir)/README $(DEST)
 	@cd doc/ && $(MAKE_INSTALL) install
 
 install-scripts:

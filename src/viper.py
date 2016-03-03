@@ -52,7 +52,7 @@ def build():
         os.system('cp viperbot.py ' + conf.VIPER_INSTALL_DIRECTORY)
         os.system('cp conf.py ' + conf.VIPER_INSTALL_DIRECTORY)
         os.system('cp viper.py ' + conf.VIPER_INSTALL_DIRECTORY)
-        os.system('cp -r configs ' + conf.VIPER_INSTALL_DIRECTORY)
+        # os.system('cp -r configs ' + conf.VIPER_INSTALL_DIRECTORY)
 
         print ' '
         print '***************************************************************************'
@@ -102,10 +102,12 @@ def setup():
     print 'Use this password to Authenticate to your bots.'
     owner_pass = getpass.getpass('Owners Password: ')
     appendToFile(global_conf, 'set owner_pass "'+owner_pass+'"')
+    print ' '
 
     print 'This is the Permanent channel that your bots will idle in.'
     home_chan = raw_input('Home Channel: ')
     appendToFile(global_conf, 'set home_chan "'+home_chan+'"')
+    print ' '
 
     print ' '
     print '***************************************************************************'
