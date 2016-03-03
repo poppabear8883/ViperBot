@@ -22,11 +22,11 @@ def build():
 
     print ' '
     print '***************************************************************************'
-    print 'ViperBot can be optionally compiled with TLS support. This requires OpenSSL'
-    print '0.9.8 or more recent installed on your system.'
+    print ' ViperBot can be optionally compiled with TLS support. This requires OpenSSL'
+    print ' 0.9.8 or more recent installed on your system.'
     print ' '
-    print 'TLS support includes encryption for IRC, DCC, botnet, telnet and scripted'
-    print 'connections as well as certificate authentication for users and bots.'
+    print ' TLS support includes encryption for IRC, DCC, botnet, telnet and scripted'
+    print ' connections as well as certificate authentication for users and bots.'
     print '***************************************************************************'
     print ' '
 
@@ -75,45 +75,24 @@ def setup():
 
     print ' '
     print '***************************************************************************'
-    print 'Now that ViperBot is installed, we need to setup some Global Settings\n' \
-          'and your Hub and AltHub bots'
-    print ' '
-    print 'Your Hub bot is what all other bots will link to, AltHub will be the bot '
-    print 'that all bots will link to IF the Hub bot is not available for linking.'
-    print ' '
-    print 'Note: EVERY bot will need its OWN IP or OWN Port, The IP and Port CANNOT '
-    print 'be the same on any of the bots in your botnet!'
-    print '***************************************************************************'
-    print ' '
-    print 'Lets get started with some Global Settings.\n' \
-          'You will not be asked these questions again.'
-    print '---------------------------------------------------------------------------'
+    print ' Now that ViperBot is installed, we need to setup a Network.'
     print ' '
 
-    print 'This should be YOUR Irc Nick.'
-    owner = userInput('Owners Nick: ')
-    appendToFile(global_conf, 'set owner "'+owner+'"')
-    print ' '
-
-    print 'Use this password to Authenticate to your bots.'
-    owner_pass = getpass.getpass('Owners Password: ')
-    appendToFile(global_conf, 'set owner_pass "'+owner_pass+'"')
-    print ' '
-
-    print 'This is the Permanent channel that your bots will idle in.'
-    home_chan = userInput('Home Channel: ')
-    appendToFile(global_conf, 'set home_chan "'+home_chan+'"')
-    print ' '
+    network = newNetwork()
 
     print ' '
     print '***************************************************************************'
-    print 'You are now done configuring your global settings\n' \
-          'Lets setup your Hub bot.'
+    print ' Your new network has been added\n' \
+          ' Lets setup a Hub and AltHub for this network.'
     print '***************************************************************************'
+    print 'Note:'
+    print ' Your Hub bot is what all other bots will link to, AltHub will be the bot '
+    print ' that all bots will link to IF the Hub bot is not available for linking.'
     print ' '
+    print ' EVERY bot will need its OWN IP or OWN Port, The IP and Port CANNOT '
+    print ' be the same on any of the bots in your botnet!'
 
-    newHub()
-
+    hubnick = newHub(network)
 
     # Home Directory
     os.chdir(conf.HOME)
@@ -125,27 +104,92 @@ def setup():
     print '***************************************************************************'
     print ' '
 
-def newHub():
+def newNetwork():
     os.chdir(conf.VIPER_INSTALL_DIRECTORY)
+    network = ''
 
-    print 'This should be the name of the Irc Network.'
-    network = userInput('Network Name: ')
-    if os.path.exists(network+'-botnet.conf'):
-        print 'You already have a botnet for this network!'
-        print 'Exiting ...'
-        sys.exit(0)
+    while True:
+        network = userInput('Network Name: ')
+        if os.path.exists('networks/'+network):
+            print 'You already have this network!'
+            continue
+        else:
+            break
 
-    replaceInFile('configs/botnet.conf', network+'-botnet.conf',
-                  '%IRCNETWORK%', network)
+    print 'Creating Network ...'
+    os.mkdir('networks/'+network)
+    os.mkdir('networks/'+network+'/logs')
+    os.mkdir('networks/'+network+'/scripts')
 
-    hubnick = userInput('Hub\'s Nick: ')
-    replaceInFile('configs/viperbot.conf', hubnick+'.conf',
-                  '%BOTNICK%', hubnick)
+    return network
+
+"""
+viperbot.conf
+-------------
+%VIPERPATH%
+%BOTNICK%
+%OWNER% %EMAIL%
+%NETWORK%
+%VHOST4%
+%VHOST6%
+%LISTENADDR%
+%PREFERIPV6%
+%LANGUAGE%
+%LISTEN% %PORT%
+%NATIP%
+%SERVERS%
+
+botnet.conf
+-----------
+%HUBNICK% %HUBIP% %HUBPORT%
+%ALTHUBNICK% %ALTHUBIP% %ALTHUBPORT%
+"""
+def newHub(network):
+    os.chdir(conf.VIPER_INSTALL_DIRECTORY)
+    net_path = 'networks/'+network+'/'
+
+    v6 = False
+    viperpath = conf.VIPER_INSTALL_DIRECTORY
+    botnick = ''
+
+    botnick = userInput('Hub\'s Nick: ')
+    while True:
+        if os.path.exists(net_path+botnick+'.conf'):
+            print 'This botnick already exists!'
+            continue
+        else:
+            break
+
+    owner = userInput('Owner\'s Nick: ')
+    email = userInput('Owner\'s Email: ')
+    v4v6 = userInput('Is this bot using IPv6? (y/N): ')
+    if v4v6 == 'y' or v4v6 == 'Y':
+        v6 = True
+
+    replaceInFile('configs/viperbot.conf', net_path+botnick+'.conf',
+                  '%VIPERPATH', conf.VIPER_INSTALL_DIRECTORY + '/viper')
+
+    replaceInFile('configs/viperbot.conf', net_path+botnick+'.conf',
+                  '%NETWORK%', network)
+
+    replaceInFile('configs/viperbot.conf', net_path+botnick+'.conf',
+                  '%BOTNICK%', botnick)
+
+    replaceInFile('configs/viperbot.conf', net_path+botnick+'.conf',
+                  '%OWNER%', owner)
+
+    replaceInFile('configs/viperbot.conf', net_path+botnick+'.conf',
+                  '%EMAIL%', email)
+
+    return botnick
 
 
 '''
-    HELPERS
+***************************
+    end of main program
+***************************
 '''
+# HELPERS
 def userInput(question):
     data = ''
 
