@@ -47,13 +47,6 @@ def build():
         os.system('make sslcert DEST=' + conf.VIPER_INSTALL_DIRECTORY)
 
     if os.path.exists(conf.VIPER_INSTALL_DIRECTORY):
-        os.system('cp __init__.py ' + conf.VIPER_INSTALL_DIRECTORY)
-        os.system('cp viper.py ' + conf.VIPER_INSTALL_DIRECTORY)
-        os.system('cp viperbot.py ' + conf.VIPER_INSTALL_DIRECTORY)
-        os.system('cp conf.py ' + conf.VIPER_INSTALL_DIRECTORY)
-        os.system('cp viper.py ' + conf.VIPER_INSTALL_DIRECTORY)
-        # os.system('cp -r configs ' + conf.VIPER_INSTALL_DIRECTORY)
-
         print ' '
         print '***************************************************************************'
         print '[ViperBot] Yay! Installion of ViperBot was Successful ...'
@@ -75,6 +68,9 @@ def setup():
     print '[Viperbot] Changing to: ' + conf.VIPER_INSTALL_DIRECTORY
     os.chdir(conf.VIPER_INSTALL_DIRECTORY)
 
+    # we need to make sure that viperbot.py is executable
+    os.chmod('viperbot.py', 0774)
+
     global_conf = conf.VIPER_GLOBAL_CONFIG
 
     print ' '
@@ -95,7 +91,7 @@ def setup():
     print ' '
 
     print 'This should be YOUR Irc Nick.'
-    owner = raw_input('Owners Nick: ')
+    owner = userInput('Owners Nick: ')
     appendToFile(global_conf, 'set owner "'+owner+'"')
     print ' '
 
@@ -105,7 +101,7 @@ def setup():
     print ' '
 
     print 'This is the Permanent channel that your bots will idle in.'
-    home_chan = raw_input('Home Channel: ')
+    home_chan = userInput('Home Channel: ')
     appendToFile(global_conf, 'set home_chan "'+home_chan+'"')
     print ' '
 
@@ -115,6 +111,9 @@ def setup():
           'Lets setup your Hub bot.'
     print '***************************************************************************'
     print ' '
+
+    newHub()
+
 
     # Home Directory
     os.chdir(conf.HOME)
@@ -126,9 +125,44 @@ def setup():
     print '***************************************************************************'
     print ' '
 
+def newHub():
+    os.chdir(conf.VIPER_INSTALL_DIRECTORY)
+
+    print 'This should be the name of the Irc Network.'
+    network = userInput('Network Name: ')
+    if os.path.exists(network+'-botnet.conf'):
+        print 'You already have a botnet for this network!'
+        print 'Exiting ...'
+        sys.exit(0)
+
+    replaceInFile('configs/botnet.conf', network+'-botnet.conf',
+                  '%IRCNETWORK%', network)
+
+    hubnick = userInput('Hub\'s Nick: ')
+    replaceInFile('configs/viperbot.conf', hubnick+'.conf',
+                  '%BOTNICK%', hubnick)
+
+
 '''
     HELPERS
 '''
+def userInput(question):
+    data = ''
+
+    while True:
+        data = raw_input(question)
+        if not data.isalnum():
+            print 'Must be an Alphanumeric value!'
+            continue
+        elif '' == data:
+            print 'Can not be empty!'
+            continue
+        else:
+            break
+
+    print ' '
+    return data
+
 def internet_on():
     try:
         response=urllib2.urlopen('http://173.194.206.102',timeout=1)
@@ -140,11 +174,16 @@ def appendToFile(filename, text):
     with open(filename, "a") as myfile:
         myfile.write(text + '\n')
 
-def replaceInFile(file, search, replace):
-    with open(file, "w") as fout:
-        with open(file, "r") as fin:
-            for line in fin:
-                fout.write(line.replace(search, replace))
+def replaceInFile(fin, fout, search, replace):
+    f = open(fin,'r')
+    filedata = f.read()
+    f.close()
+
+    newdata = filedata.replace(search, replace)
+
+    f = open(fout,'w')
+    f.write(newdata)
+    f.close()
 
 def download(url, filename):
     u = urllib2.urlopen(url)

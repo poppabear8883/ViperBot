@@ -394,6 +394,18 @@ install-modules:
 	fi
 
 install-data:
+	@if test ! -f $(DEST)/__init__.py; then \
+		$(INSTALL_DATA) $(srcdir)/__init__.py $(DEST)/; \
+	fi
+	@if test ! -f $(DEST)/viper.py; then \
+		$(INSTALL_DATA) $(srcdir)/viper.py $(DEST)/; \
+	fi
+	@if test ! -f $(DEST)/viperbot.py; then \
+		$(INSTALL_DATA) $(srcdir)/viperbot.py $(DEST)/; \
+	fi
+	@if test ! -f $(DEST)/conf.py; then \
+		$(INSTALL_DATA) $(srcdir)/conf.py $(DEST)/; \
+	fi
 	@if test ! -d $(DEST)/configs; then \
 		echo "Creating 'configs' subdirectory."; \
 		$(top_srcdir)/misc/mkinstalldirs $(DEST)/configs >/dev/null; \
