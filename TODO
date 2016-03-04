@@ -1,10 +1,10 @@
 High:
-todo: create serversInput(question) method in inputs.py
-todo: add new directories/files to Makefile.in
+todo: bot.py create() check for commented lines
+todo: bot.py create() loop servers, add to .conf
+todo: bot.py make a start() method
 todo: finish create() method in Bot.py class
-todo: add "type" to create() method in Bot.py class
 todo: finalize create() method and run tests
-
+todo: make network-botnet.conf
 
 Medium:
 todo: search & replace eggdrop -> viperbot

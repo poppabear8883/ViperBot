@@ -3,20 +3,14 @@ import re
 import ipaddress
 
 def yesNoInput(question):
-    data = ''
+    valid = ['','y','Y','ye','yes','YES','n','N','no','No','NO']
 
-    conditions = (data == 'y') or (data == 'Y') \
-                 or (data == 'n') or (data == 'N') \
-                 or (data == 'yes') or (data == 'Yes') or (data == 'YES') \
-                 or (data == 'no') or (data == 'No') or (data == 'NO')
+    data = ''
 
     while True:
         data = raw_input(question)
-        if not conditions:
+        if not data in valid:
             print 'Invalid input!'
-            continue
-        elif '' == data:
-            print 'Can not be empty!'
             continue
         else:
             break
@@ -37,6 +31,26 @@ def alphaNumInput(question):
             continue
         else:
             break
+
+    print ' '
+    return data
+
+def serversInput(question):
+    data = ''
+
+    while True:
+        data = raw_input(question)
+        if not re.match(r'[^:,]+:\d+(?:,[^:,]+:\d+)*$', data):
+            print 'Invalid Input! (server:port,server:port)'
+            continue
+        else:
+            servers = data.split(',', 1)
+            for server in servers:
+                if not re.match(r'(?=^.{1,254}$)(^(?:(?!\d+\.|-)[a-zA-Z0-9_\-]{1,63}(?<!-)\.)+(?:[a-zA-Z]{2,})$)', server):
+                    print 'The server portion is not a FQDN ie: (irc.freenode.net)'
+                    continue
+                else:
+                    break
 
     print ' '
     return data

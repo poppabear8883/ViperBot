@@ -406,6 +406,32 @@ install-data:
 	@if test ! -f $(DEST)/conf.py; then \
 		$(INSTALL_DATA) $(srcdir)/conf.py $(DEST)/; \
 	fi
+	@if test ! -d $(DEST)/classes; then \
+		echo "Creating 'classes' subdirectory."; \
+		$(top_srcdir)/misc/mkinstalldirs $(DEST)/classes >/dev/null; \
+	fi;
+	@if test ! -f $(DEST)/classes/__init__.py; then \
+		$(INSTALL_DATA) $(srcdir)/classes/__init__.py $(DEST)/; \
+	fi
+	@if test ! -f $(DEST)/classes/bot.py; then \
+		$(INSTALL_DATA) $(srcdir)/classes/bot.py $(DEST)/; \
+	fi
+	@if test ! -d $(DEST)/libs; then \
+		echo "Creating 'libs' subdirectory."; \
+		$(top_srcdir)/misc/mkinstalldirs $(DEST)/libs >/dev/null; \
+	fi;
+	@if test ! -f $(DEST)/libs/__init__.py; then \
+		$(INSTALL_DATA) $(srcdir)/libs/__init__.py $(DEST)/; \
+	fi
+	@if test ! -f $(DEST)/libs/helpers.py; then \
+		$(INSTALL_DATA) $(srcdir)/libs/helpers.py $(DEST)/; \
+	fi
+	@if test ! -f $(DEST)/libs/inputs.py; then \
+		$(INSTALL_DATA) $(srcdir)/libs/inputs.py $(DEST)/; \
+	fi
+	@if test ! -f $(DEST)/libs/ipaddress.py; then \
+		$(INSTALL_DATA) $(srcdir)/libs/ipaddress.py $(DEST)/; \
+	fi
 	@if test ! -d $(DEST)/networks; then \
 		echo "Creating 'networks' subdirectory."; \
 		$(top_srcdir)/misc/mkinstalldirs $(DEST)/networks >/dev/null; \

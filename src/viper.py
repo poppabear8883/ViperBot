@@ -9,10 +9,10 @@ import os
 import sys
 import conf
 
-from libs import helpers
-from libs import inputs
+import libs.helpers as helper
+import libs.inputs as inputs
 
-from classes.Bot import Bot
+from classes.bot import Bot
 
 def build():
     print '[ViperBot] Installing ...'
@@ -93,6 +93,7 @@ def setup():
     print ' '
     print ' EVERY bot will need its OWN IP or OWN Port, The IP and Port CANNOT '
     print ' be the same on any of the bots in your botnet!'
+    print ' '
 
     hubnick = newBot(network)
 
@@ -150,6 +151,8 @@ def newBot(network):
     INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
     os.chdir(INSTALLDIR)
 
+    botnick = ''
+
     while True:
         botnick = inputs.alphaNumInput('Bot\'s Nick: ')
         botnick_conf = INSTALLDIR+'/'+network+'/'+botnick+'.conf'
@@ -160,7 +163,8 @@ def newBot(network):
             break
 
     # Create a Bot Object
-    bot_o = Bot()
+    bot_o = Bot(botnick)
+
     bot_o.NETWORK = network
 
     bot_o.OWNER = inputs.alphaNumInput('Owner\'s Nick: ')
@@ -191,20 +195,8 @@ def newBot(network):
           'Note: Do Not use spaces!'
     print '---------------------------------------------------------'
     print ' '
-    while True:
-        servers = raw_input('Servers: ')
-        if ' ' in servers:
-            print 'Do Not use spaces!'
-            continue
-        elif '' == servers:
-            print 'Can not be empty!'
-            continue
-        elif servers.startswith(',') or servers.endswith(','):
-            print 'Remove any ,\'s from the beginning or end of your input!'
-            continue
-        else:
-            break
 
+    servers = inputs.serversInput('Servers: ')
     bot_o.SERVERS = servers.split(',')
 
     # Lets create our new bot!
