@@ -7,10 +7,12 @@ EDITING THIS FILE COULD CORRUPT YOUR VIPERBOT INSTALL.
 """
 import os
 import sys
-import getpass
-import tarfile
-import urllib2
 import conf
+
+from libs import helpers
+from libs import inputs
+
+from classes.Bot import Bot
 
 def build():
     print '[ViperBot] Installing ...'
@@ -92,7 +94,7 @@ def setup():
     print ' EVERY bot will need its OWN IP or OWN Port, The IP and Port CANNOT '
     print ' be the same on any of the bots in your botnet!'
 
-    hubnick = newHub(network)
+    hubnick = newBot(network)
 
     # Home Directory
     os.chdir(conf.HOME)
@@ -109,7 +111,7 @@ def newNetwork():
     network = ''
 
     while True:
-        network = userInput('Network Name: ')
+        network = inputs.alphaNumInput('Network Name: ')
         if os.path.exists('networks/'+network):
             print 'You already have this network!'
             continue
@@ -135,7 +137,7 @@ viperbot.conf
 %LISTENADDR%
 %PREFERIPV6%
 %LANGUAGE%
-%LISTEN% %PORT%
+%PORT%
 %NATIP%
 %SERVERS%
 
@@ -144,45 +146,71 @@ botnet.conf
 %HUBNICK% %HUBIP% %HUBPORT%
 %ALTHUBNICK% %ALTHUBIP% %ALTHUBPORT%
 """
-def newHub(network):
-    os.chdir(conf.VIPER_INSTALL_DIRECTORY)
-    net_path = 'networks/'+network+'/'
+def newBot(network):
+    INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
+    os.chdir(INSTALLDIR)
 
-    v6 = False
-    viperpath = conf.VIPER_INSTALL_DIRECTORY
-    botnick = ''
-
-    botnick = userInput('Hub\'s Nick: ')
     while True:
-        if os.path.exists(net_path+botnick+'.conf'):
+        botnick = inputs.alphaNumInput('Bot\'s Nick: ')
+        botnick_conf = INSTALLDIR+'/'+network+'/'+botnick+'.conf'
+        if os.path.exists(botnick_conf):
             print 'This botnick already exists!'
             continue
         else:
             break
 
-    owner = userInput('Owner\'s Nick: ')
-    email = userInput('Owner\'s Email: ')
-    v4v6 = userInput('Is this bot using IPv6? (y/N): ')
+    # Create a Bot Object
+    bot_o = Bot()
+    bot_o.NETWORK = network
+
+    bot_o.OWNER = inputs.alphaNumInput('Owner\'s Nick: ')
+    bot_o.EMAIL = inputs.emailInput('Owner\'s Email: ')
+
+    v4v6 = inputs.yesNoInput('Is this bot using IPv6? (y/N): ')
     if v4v6 == 'y' or v4v6 == 'Y':
-        v6 = True
+        preferipv6 = inputs.yesNoInput('Do you prefer IPv6 over IPv4? (y/N): ')
+        bot_o.ISV6 = True
+        if preferipv6 == 'y' or preferipv6 == 'Y':
+            bot_o.PREFERIPV6 = True
 
-    replaceInFile('configs/viperbot.conf', net_path+botnick+'.conf',
-                  '%VIPERPATH', conf.VIPER_INSTALL_DIRECTORY + '/viper')
+    bot_o.IP = inputs.ipInput('IP: ')
 
-    replaceInFile('configs/viperbot.conf', net_path+botnick+'.conf',
-                  '%NETWORK%', network)
+    bot_o.PORT = inputs.portInput('Port: ')
 
-    replaceInFile('configs/viperbot.conf', net_path+botnick+'.conf',
-                  '%BOTNICK%', botnick)
+    nat = inputs.yesNoInput('Is this bot behind a NAT? (y/N): ')
+    if nat == 'y' or nat == 'Y':
+        bot_o.NATIP = inputs.ipInput('NAT IP: ')
 
-    replaceInFile('configs/viperbot.conf', net_path+botnick+'.conf',
-                  '%OWNER%', owner)
+    print '---------------------------------------------------------'
+    print ' Here you will list the servers that this bot will\n' \
+          ' attempt to connect to.\n' \
+          '\n' \
+          'Syntax: server:port'
+    print 'Example: irc.freenode.net:6667,irc.freenode.net:6697\n' \
+          '\n' \
+          'Note: Do Not use spaces!'
+    print '---------------------------------------------------------'
+    print ' '
+    while True:
+        servers = raw_input('Servers: ')
+        if ' ' in servers:
+            print 'Do Not use spaces!'
+            continue
+        elif '' == servers:
+            print 'Can not be empty!'
+            continue
+        elif servers.startswith(',') or servers.endswith(','):
+            print 'Remove any ,\'s from the beginning or end of your input!'
+            continue
+        else:
+            break
 
-    replaceInFile('configs/viperbot.conf', net_path+botnick+'.conf',
-                  '%EMAIL%', email)
+    bot_o.SERVERS = servers.split(',')
+
+    # Lets create our new bot!
+    bot_o.create()
 
     return botnick
-
 
 '''
 ***************************
@@ -190,71 +218,3 @@ def newHub(network):
 ***************************
 '''
 # HELPERS
-def userInput(question):
-    data = ''
-
-    while True:
-        data = raw_input(question)
-        if not data.isalnum():
-            print 'Must be an Alphanumeric value!'
-            continue
-        elif '' == data:
-            print 'Can not be empty!'
-            continue
-        else:
-            break
-
-    print ' '
-    return data
-
-def internet_on():
-    try:
-        response=urllib2.urlopen('http://173.194.206.102',timeout=1)
-        return True
-    except urllib2.URLError as err: pass
-    return False
-
-def appendToFile(filename, text):
-    with open(filename, "a") as myfile:
-        myfile.write(text + '\n')
-
-def replaceInFile(fin, fout, search, replace):
-    f = open(fin,'r')
-    filedata = f.read()
-    f.close()
-
-    newdata = filedata.replace(search, replace)
-
-    f = open(fout,'w')
-    f.write(newdata)
-    f.close()
-
-def download(url, filename):
-    u = urllib2.urlopen(url)
-    f = open(filename, 'wb')
-    meta = u.info()
-    file_size = int(meta.getheaders("Content-Length")[0])
-    print "Downloading: %s Bytes: %s" % (filename, file_size)
-
-    file_size_dl = 0
-    block_sz = 8192
-    while True:
-        buffer = u.read(block_sz)
-        if not buffer:
-            break
-
-        file_size_dl += len(buffer)
-        f.write(buffer)
-        status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-        status = status + chr(8) * (len(status) + 1)
-        print status,
-
-    f.close()
-    print ' '
-
-
-def extract(filename):
-    print 'Extracting ...'
-    tar = tarfile.open(filename)
-    tar.extractall()
-    tar.close()

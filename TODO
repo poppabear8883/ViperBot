@@ -1,0 +1,24 @@
+High:
+todo: create serversInput(question) method in inputs.py
+todo: add new directories/files to Makefile.in
+todo: finish create() method in Bot.py class
+todo: add "type" to create() method in Bot.py class
+todo: finalize create() method and run tests
+
+
+Medium:
+todo: search & replace eggdrop -> viperbot
+todo: document all code
+todo: change help files to include new cmds
+
+
+Low:
+todo: create & modify existing docs
+
+
+Maybe:
+todo: create interactive command-line tool
+
+
+Milestones:
+todo: get basic Hub and AltHub connected and linked
