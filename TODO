@@ -1,4 +1,5 @@
 High:
+todo: replace lines instead of patterns in bot.py @ editBotConfig()
 todo: bot.py create() check for commented lines
 todo: bot.py create() loop servers, add to .conf
 todo: bot.py make a start() method

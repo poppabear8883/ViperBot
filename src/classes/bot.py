@@ -1,4 +1,6 @@
 import os
+
+from tempfile import mkstemp
 from src import conf
 from src.libs import helpers
 
@@ -25,27 +27,23 @@ class Bot:
         VIPERPATH = INSTALLDIR + '/viper'
 
         print 'VIPERPATH: ' + VIPERPATH
-        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
+        self.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%VIPERPATH%', VIPERPATH)
 
         print 'OWNER: ' + self.OWNER
-        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
+        self.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%OWNER%', self.OWNER)
 
-        print 'EMAIL: ' + self.EMAIL
-        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
-                  '%EMAIL%', self.EMAIL)
-
         print 'NETWORK: ' + self.NETWORK
-        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
+        self.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%NETWORK%', self.NETWORK)
 
         print 'LISTENADDR: ' + self.LISTENADDR
-        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
+        self.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%LISTENADDR%', self.LISTENADDR)
 
         print 'NATIP: ' + self.NATIP
-        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
+        self.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%NATIP%', self.NATIP)
 
         print ' '
@@ -56,3 +54,30 @@ class Bot:
         print ' '
 
         os.chdir(INSTALLDIR)
+
+    def editBotConfig(self, network, botnick, search, replace):
+        INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
+        network_path = INSTALLDIR + '/networks/' + network + '/'
+        botnick_conf = botnick + '.conf'
+        viperbot_conf = INSTALLDIR + '/configs/viperbot.conf'
+
+        os.chdir(network_path)
+
+        if not os.path.exists(network_path + botnick_conf):
+            os.system('cp ' + viperbot_conf + ' ' + network_path)
+            os.rename('viperbot.conf', botnick_conf)
+
+        #Create temp file
+        fh, abs_path = mkstemp()
+        with open(abs_path, 'w') as new_file:
+            with open(botnick_conf, 'r') as old_file:
+                for line in old_file:
+                    new_file.write(line.replace(search, replace))
+
+        os.close(fh)
+
+        #Remove original file
+        os.remove(botnick_conf)
+
+        #Rename new file
+        os.rename(abs_path, botnick_conf)

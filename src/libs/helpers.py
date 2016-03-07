@@ -1,6 +1,7 @@
 import urllib2
 import tarfile
 import os
+import sys
 
 from src import conf
 
@@ -15,47 +16,17 @@ def appendToFile(filename, text):
     with open(filename, "a") as myfile:
         myfile.write(text + '\n')
 
-def editBotConfig(network, botnick, search, replace):
-    '''
-    CURRENTLY THIS IS BROKEN AS F*CK!!
-    I AM GOING ABOUT THIS FUNCTION ALL WRONG!
+def findLinesInFile(filename, searchFor):
+    arr = []
 
-    :param network:
-    :param botnick:
-    :param search:
-    :param replace:
-    :return:
-    '''
-    INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
-    network_path = INSTALLDIR + '/networks/' + network + '/'
-    botnick_conf = botnick + '.conf'
-    viperbot_conf = INSTALLDIR + '/configs/viperbot.conf'
+    with open(filename) as search:
+        for num, line in enumerate(search, 1):
+            line = line.rstrip()
+            if searchFor in line:
+                if not line.startswith('#'):
+                    arr.append(num)
 
-    os.chdir(network_path)
-    tmp = 'tmp.conf'
-
-    if not os.path.exists(botnick_conf):
-        f = open(viperbot_conf,'r')
-        filedata = f.read()
-        f.close()
-    else:
-        f = open(botnick_conf,'r')
-        filedata = f.read()
-        f.close()
-
-    newdata = filedata.replace(search, replace)
-
-    f = open(tmp, 'w')
-    f.write(newdata)
-    f.close()
-
-    if os.path.exists(tmp):
-        if os.path.exists(botnick_conf):
-            os.rename(botnick_conf, botnick_conf+'.old')
-        os.rename(tmp, botnick_conf)
-    else:
-        print 'Fatal Error: Temp File was not written'
-        exit()
+    return arr
 
 def download(url, filename):
     u = urllib2.urlopen(url)
