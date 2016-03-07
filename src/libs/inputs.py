@@ -46,11 +46,13 @@ def serversInput(question):
         else:
             servers = data.split(',', 1)
             for server in servers:
-                if not re.match(r'(?=^.{1,254}$)(^(?:(?!\d+\.|-)[a-zA-Z0-9_\-]{1,63}(?<!-)\.)+(?:[a-zA-Z]{2,})$)', server):
+                s = server.split(':', 1)
+                if not re.match(r'(?=^.{1,254}$)(^(?:(?!\d+\.|-)[a-zA-Z0-9_\-]{1,63}(?<!-)\.)+(?:[a-zA-Z]{2,})$)', s[0]):
                     print 'The server portion is not a FQDN ie: (irc.freenode.net)'
                     continue
                 else:
                     break
+            break
 
     print ' '
     return data
@@ -80,7 +82,7 @@ def ipInput(question):
         try:
             if ipaddress.ip_address(data):
                 break
-        except ipaddress.AddressValueError:
+        except ValueError:
             print 'Not a valid IP!'
             continue
 

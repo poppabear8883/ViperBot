@@ -1,3 +1,4 @@
+import os
 from src import conf
 from src.libs import helpers
 
@@ -23,37 +24,35 @@ class Bot:
         INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
         VIPERPATH = INSTALLDIR + '/viper'
 
-        network_path = INSTALLDIR + '/networks/' + self.NETWORK + '/'
-        botnick_conf = network_path + self.BOTNICK + '.conf'
-        viperbot_conf = INSTALLDIR + '/configs/viperbot.conf'
-
         print 'VIPERPATH: ' + VIPERPATH
-        helpers.replaceInFile(viperbot_conf, botnick_conf,
+        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%VIPERPATH%', VIPERPATH)
 
         print 'OWNER: ' + self.OWNER
-        helpers.replaceInFile(viperbot_conf, botnick_conf,
+        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%OWNER%', self.OWNER)
 
         print 'EMAIL: ' + self.EMAIL
-        helpers.replaceInFile(viperbot_conf, botnick_conf,
+        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%EMAIL%', self.EMAIL)
 
         print 'NETWORK: ' + self.NETWORK
-        helpers.replaceInFile(viperbot_conf, botnick_conf,
+        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%NETWORK%', self.NETWORK)
 
         print 'LISTENADDR: ' + self.LISTENADDR
-        helpers.replaceInFile(viperbot_conf, botnick_conf,
+        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%LISTENADDR%', self.LISTENADDR)
 
         print 'NATIP: ' + self.NATIP
-        helpers.replaceInFile(viperbot_conf, botnick_conf,
+        helpers.editBotConfig(self.NETWORK, self.BOTNICK,
                   '%NATIP%', self.NATIP)
 
         print ' '
         print '***************************************************'
         print ' Done creating ' + self.BOTNICK + '.conf'
-        print ' Location: ' + botnick_conf
+        print ' Location: '+INSTALLDIR+'/networks/'+self.NETWORK+'/'+self.BOTNICK+'.conf'
         print '***************************************************'
         print ' '
+
+        os.chdir(INSTALLDIR)
