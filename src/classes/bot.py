@@ -67,12 +67,16 @@ class Bot:
             os.system('cp ' + viperbot_conf + ' ' + network_path)
             os.rename('viperbot.conf', botnick_conf)
 
+        lines = self.findLinesInFile(botnick_conf, search)
+
         #Create temp file
         fh, abs_path = mkstemp()
         with open(abs_path, 'w') as new_file:
             with open(botnick_conf, 'r') as old_file:
-                for line in old_file:
-                    new_file.write(line.replace(search, replace))
+                for num, line in enumerate(old_file, 1):
+                    new_file.write(line)
+                    if num in lines:
+                        new_file.write(line.replace(search, replace))
 
         os.close(fh)
 
@@ -81,3 +85,15 @@ class Bot:
 
         #Rename new file
         os.rename(abs_path, botnick_conf)
+
+    def findLinesInFile(self, filename, searchFor):
+        arr = []
+
+        with open(filename) as search:
+            for num, line in enumerate(search, 1):
+                line = line.rstrip()
+                if searchFor in line:
+                    if not line.startswith('#'):
+                        arr.append(num)
+
+        return arr

@@ -16,18 +16,6 @@ def appendToFile(filename, text):
     with open(filename, "a") as myfile:
         myfile.write(text + '\n')
 
-def findLinesInFile(filename, searchFor):
-    arr = []
-
-    with open(filename) as search:
-        for num, line in enumerate(search, 1):
-            line = line.rstrip()
-            if searchFor in line:
-                if not line.startswith('#'):
-                    arr.append(num)
-
-    return arr
-
 def download(url, filename):
     u = urllib2.urlopen(url)
     f = open(filename, 'wb')
