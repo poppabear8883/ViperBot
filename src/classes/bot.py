@@ -15,36 +15,53 @@ class Bot:
         self.NATIP = ''
 
         self.IP = ''
-        self.PORT = 3333
+        self.PORT = '3033'
         self.ISV6 = False
-        self.PREFERIPV6 = False
-        self.LANGUAGE = 'english'
-        self.SERVERS = []
+        self.PREFERIPV6 = '0'
+        self.SERVERS = ''
 
-    def create(self, type = 'leaf'):
-        print 'Creating ' + self.BOTNICK + '.conf ...'
+    def confTemplateVars(self):
         INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
         VIPERPATH = INSTALLDIR + '/viper'
+        return {
+            '{{%VIPERPATH%}}':VIPERPATH,
+            '{{%NETWORK%}}':self.NETWORK,
+            '{{%BOTNICK%}}':self.BOTNICK,
+            '{{%OWNER%}}':self.OWNER,
+            '{{%EMAIL%}}':self.EMAIL,
+            '{{%VHOST4%}}':self.IP,
+            '{{%VHOST6%}}':self.IP,
+            '{{%PORT%}}':self.PORT,
+            '{{%PREFERIPV6%}}':self.PREFERIPV6,
+            '{{%NATIP%}}':self.NATIP,
+            '{{%SERVERS%}}':self.SERVERS.replace(',','\n  '),
+            '{{%LISTENADDR%}}':self.LISTENADDR
+        }
 
-        print 'VIPERPATH: ' + VIPERPATH
-        self.editBotConfig(self.NETWORK, self.BOTNICK,
-                  '%VIPERPATH%', VIPERPATH)
+    def create(self, type = 'leaf'):
 
-        print 'OWNER: ' + self.OWNER
-        self.editBotConfig(self.NETWORK, self.BOTNICK,
-                  '%OWNER%', self.OWNER)
+        print 'Creating ' + self.BOTNICK + '.conf ...'
+        INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
 
-        print 'NETWORK: ' + self.NETWORK
-        self.editBotConfig(self.NETWORK, self.BOTNICK,
-                  '%NETWORK%', self.NETWORK)
+        network_path = INSTALLDIR + '/networks/' + self.NETWORK + '/'
+        botnick_conf = self.BOTNICK + '.conf'
+        viperbot_conf = INSTALLDIR + '/configs/viperbot.conf'
 
-        print 'LISTENADDR: ' + self.LISTENADDR
-        self.editBotConfig(self.NETWORK, self.BOTNICK,
-                  '%LISTENADDR%', self.LISTENADDR)
+        os.chdir(network_path)
 
-        print 'NATIP: ' + self.NATIP
-        self.editBotConfig(self.NETWORK, self.BOTNICK,
-                  '%NATIP%', self.NATIP)
+        os.system('cp ' + viperbot_conf + ' ' + network_path)
+        os.rename('viperbot.conf', botnick_conf)
+
+        f = open(botnick_conf)
+        text = f.read()
+        f.close()
+
+        for k, v in self.confTemplateVars().items():
+            text = text.replace(k, v)
+
+        f = open(botnick_conf, "w")
+        f.write(text)
+        f.close()
 
         print ' '
         print '***************************************************'
@@ -55,36 +72,12 @@ class Bot:
 
         os.chdir(INSTALLDIR)
 
-    def editBotConfig(self, network, botnick, search, replace):
+    def editBotConfig(self, network, botnick, search, replace, isCSV=False):
         INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
         network_path = INSTALLDIR + '/networks/' + network + '/'
         botnick_conf = botnick + '.conf'
-        viperbot_conf = INSTALLDIR + '/configs/viperbot.conf'
 
         os.chdir(network_path)
-
-        if not os.path.exists(network_path + botnick_conf):
-            os.system('cp ' + viperbot_conf + ' ' + network_path)
-            os.rename('viperbot.conf', botnick_conf)
-
-        lines = self.findLinesInFile(botnick_conf, search)
-
-        #Create temp file
-        fh, abs_path = mkstemp()
-        with open(abs_path, 'w') as new_file:
-            with open(botnick_conf, 'r') as old_file:
-                for num, line in enumerate(old_file, 1):
-                    new_file.write(line)
-                    if num in lines:
-                        new_file.write(line.replace(search, replace))
-
-        os.close(fh)
-
-        #Remove original file
-        os.remove(botnick_conf)
-
-        #Rename new file
-        os.rename(abs_path, botnick_conf)
 
     def findLinesInFile(self, filename, searchFor):
         arr = []

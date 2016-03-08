@@ -44,7 +44,7 @@ def build():
     os.system('make static')
     os.system('make install DEST=' + conf.VIPER_INSTALL_DIRECTORY)
 
-    if disable_tls != 'y' or disable_tls != 'Y':
+    if not disable_tls == 'y' or not disable_tls == 'Y':
         print '[ViperBot] Generating SSL Certificates ...'
         os.system('make sslcert DEST=' + conf.VIPER_INSTALL_DIRECTORY)
 
@@ -95,7 +95,20 @@ def setup():
     print ' be the same on any of the bots in your botnet!'
     print ' '
 
-    hubnick = newBot(network)
+    # hubnick = newBot(network)
+    tBot = Bot('Vipor')
+    tBot.NETWORK = 'Freenode'
+    tBot.NATIP = ''
+    tBot.OWNER = 'Poppabear'
+    tBot.EMAIL = 'servnx@gmail.com'
+    tBot.IP = '123.123.123.123'
+    tBot.PORT = '3456'
+    tBot.PREFERIPV6 = '0'
+    tBot.LISTENADDR = ''
+    tBot.ISV6 = False
+    tBot.SERVERS = 'irc.freenode.net:6667,irc.freenode.net:6697'
+
+    tBot.create()
 
     # Home Directory
     os.chdir(conf.HOME)
@@ -197,7 +210,7 @@ def newBot(network):
     print ' '
 
     servers = inputs.serversInput('Servers: ')
-    bot_o.SERVERS = servers.split(',')
+    bot_o.SERVERS = servers
 
     # Lets create our new bot!
     bot_o.create()
