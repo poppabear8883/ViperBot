@@ -73,8 +73,6 @@ def setup():
     # we need to make sure that viperbot.py is executable
     os.chmod('viperbot.py', 0774)
 
-    global_conf = conf.VIPER_GLOBAL_CONFIG
-
     print ' '
     print '***************************************************************************'
     print ' Now that ViperBot is installed, we need to setup a Network.'
@@ -96,17 +94,17 @@ def setup():
     print ' '
 
     # hubnick = newBot(network)
-    tBot = Bot('Vipor')
+    tBot = Bot('ViporBot')
     tBot.NETWORK = 'Freenode'
     tBot.NATIP = ''
     tBot.OWNER = 'Poppabear'
     tBot.EMAIL = 'servnx@gmail.com'
-    tBot.IP = '123.123.123.123'
+    tBot.IP = '162.243.241.68'
     tBot.PORT = '3456'
     tBot.PREFERIPV6 = '0'
     tBot.LISTENADDR = ''
     tBot.ISV6 = False
-    tBot.SERVERS = 'irc.freenode.net:6667,irc.freenode.net:6697'
+    tBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
 
     tBot.create()
 

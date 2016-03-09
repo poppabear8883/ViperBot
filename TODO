@@ -1,7 +1,5 @@
 High:
-todo: bot.py create() check for commented lines
-todo: bot.py make a start() method
-todo: finish create() method in Bot.py class
+todo: language files not being found (BUG)
 todo: finalize create() method and run tests
 todo: make network-botnet.conf
 

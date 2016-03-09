@@ -22,7 +22,7 @@ class Bot:
 
     def confTemplateVars(self):
         INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
-        VIPERPATH = INSTALLDIR + '/viper'
+        VIPERPATH = INSTALLDIR + '/viperbot'
         return {
             '{{%VIPERPATH%}}':VIPERPATH,
             '{{%NETWORK%}}':self.NETWORK,
@@ -56,12 +56,25 @@ class Bot:
         text = f.read()
         f.close()
 
-        for k, v in self.confTemplateVars().items():
-            text = text.replace(k, v)
+        new = ''
+
+        for line in text.splitlines():
+            for k, v in self.confTemplateVars().items():
+                if k in line:
+                    if '{{%VHOST4%}}' in line and not self.ISV6:
+                        line = line.replace('#', '')
+                    elif '{{%VHOST6%}}' in line and self.ISV6:
+                        line = line.replace('#', '')
+
+                line = line.replace(k, v)
+
+            new += line + '\n'
 
         f = open(botnick_conf, "w")
-        f.write(text)
+        f.write(new)
         f.close()
+
+        os.chmod(botnick_conf, 0744)
 
         print ' '
         print '***************************************************'
@@ -70,7 +83,17 @@ class Bot:
         print '***************************************************'
         print ' '
 
+        self.start(self.NETWORK, self.BOTNICK)
+
         os.chdir(INSTALLDIR)
+
+    def start(self, network, botnick):
+        INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
+        network_path = INSTALLDIR + '/networks/' + network + '/'
+        os.chdir(network_path)
+
+        print 'Starting ' + botnick
+        os.system('./'+botnick+'.conf')
 
     def editBotConfig(self, network, botnick, search, replace, isCSV=False):
         INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
