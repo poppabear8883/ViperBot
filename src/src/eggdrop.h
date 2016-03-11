@@ -62,7 +62,7 @@
 
 
 /* Language stuff */
-#define LANGDIR  "./language" /* language file directory                   */
+#define LANGDIR  "../../language" /* language file directory                   */
 #define BASELANG "english"    /* language which always gets loaded before
                                  all other languages. You do not want to
                                  change this.                              */
