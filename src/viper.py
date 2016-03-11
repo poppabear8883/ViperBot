@@ -93,11 +93,14 @@ def setup():
     print ' be the same on any of the bots in your botnet!'
     print ' '
 
+    print ' '
+    print '# Lets setup the Hub Bot first'
+    print ' '
     # hubnick = newBot(network)
-    tBot = Bot('ViporBot')
+    tBot = Bot('ViperHub')
     tBot.NETWORK = 'Freenode'
     tBot.NATIP = ''
-    tBot.OWNER = 'Poppabear'
+    tBot.OWNER = 'Poppabear, PoppaWork'
     tBot.EMAIL = 'servnx@gmail.com'
     tBot.IP = '162.243.241.68'
     tBot.PORT = '3456'
@@ -106,7 +109,25 @@ def setup():
     tBot.ISV6 = False
     tBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
 
-    tBot.create()
+    tBot.create('hub')
+
+    print ' '
+    print '# and now the AltHub bot'
+    print ' '
+    # althubnick = newBot(network)
+    tBot = Bot('ViperAltHub')
+    tBot.NETWORK = 'Freenode'
+    tBot.NATIP = ''
+    tBot.OWNER = 'Poppabear, PoppaWork'
+    tBot.EMAIL = 'servnx@gmail.com'
+    tBot.IP = '162.243.241.68'
+    tBot.PORT = '3457'
+    tBot.PREFERIPV6 = '0'
+    tBot.LISTENADDR = ''
+    tBot.ISV6 = False
+    tBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+
+    tBot.create('althub')
 
     # Home Directory
     os.chdir(conf.HOME)
@@ -137,27 +158,6 @@ def newNetwork():
 
     return network
 
-"""
-viperbot.conf
--------------
-%VIPERPATH%
-%BOTNICK%
-%OWNER% %EMAIL%
-%NETWORK%
-%VHOST4%
-%VHOST6%
-%LISTENADDR%
-%PREFERIPV6%
-%LANGUAGE%
-%PORT%
-%NATIP%
-%SERVERS%
-
-botnet.conf
------------
-%HUBNICK% %HUBIP% %HUBPORT%
-%ALTHUBNICK% %ALTHUBIP% %ALTHUBPORT%
-"""
 def newBot(network):
     INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
     os.chdir(INSTALLDIR)
@@ -211,7 +211,7 @@ def newBot(network):
     bot_o.SERVERS = servers
 
     # Lets create our new bot!
-    bot_o.create()
+    bot_o.create('hub')
 
     return botnick
 

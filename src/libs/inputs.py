@@ -1,6 +1,7 @@
 import helpers
 import re
 import ipaddress
+import getpass
 
 def yesNoInput(question):
     valid = ['','y','Y','ye','yes','YES','n','N','no','No','NO']
@@ -18,6 +19,23 @@ def yesNoInput(question):
     print ' '
     return data
 
+def passwordInput(question):
+    data = ''
+
+    while True:
+        data = getpass.getpass(question)
+        if not data.isalnum():
+            print 'Must be an Alphanumeric value!'
+            continue
+        elif '' == data:
+            print 'Can not be empty!'
+            continue
+        else:
+            break
+
+    print ' '
+    return data
+
 def alphaNumInput(question):
     data = ''
 
@@ -25,6 +43,23 @@ def alphaNumInput(question):
         data = raw_input(question)
         if not data.isalnum():
             print 'Must be an Alphanumeric value!'
+            continue
+        elif '' == data:
+            print 'Can not be empty!'
+            continue
+        else:
+            break
+
+    print ' '
+    return data
+
+def channelInput(question):
+    data = ''
+
+    while True:
+        data = raw_input(question)
+        if not data.startswith('#'):
+            print 'Must start with #! (#'+data+')'
             continue
         elif '' == data:
             print 'Can not be empty!'

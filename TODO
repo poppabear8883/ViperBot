@@ -1,7 +1,8 @@
 High:
 todo: finalize create() method and run tests
-todo: make network-botnet.conf
-
+todo: Refused telnet connection from telnet@162.243.241.68 (tried using my botnetnick)
+todo: network-botnet.conf seems to be writing several times
+todo: touch .user files for althub and leafs
 
 Medium:
 todo: search & replace eggdrop -> viperbot
