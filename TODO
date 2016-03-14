@@ -1,8 +1,10 @@
 High:
-todo: finalize create() method and run tests
-todo: Refused telnet connection from telnet@162.243.241.68 (tried using my botnetnick)
-todo: network-botnet.conf seems to be writing several times
-todo: touch .user files for althub and leafs
+todo: start viperbot.py main program
+todo: symlinks to programs ??
+todo: clean up code, create broken down methods
+todo: get rid of temporary code
+todo: rename/refactor some file names ??
+todo: brainstorm workflow idea's
 
 Medium:
 todo: search & replace eggdrop -> viperbot

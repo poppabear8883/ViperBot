@@ -5,10 +5,10 @@ viperbot.py (c) 2016 Poppabear @ Freenode Irc Network
 
 """
 import getopt
-import os
 import sys
 import conf
 import viper
+from classes.bot import Bot
 
 # Main program entry point
 def main(argv):
@@ -25,12 +25,12 @@ def main(argv):
     for opt, arg in opts:
         if opt == '-h':
             help()
-        elif opt == '-n':
-            viper_new(arg)
+        elif opt == '-a':
+            viperNewBot(arg)
         elif opt == '-u':
-            viper_update(arg)
+            viperUpdate(arg)
         elif opt == '-s':
-            viper_start(arg)
+            viperStart(arg)
         elif opt in ("-o", "--options"):
             print 'Viper Options: ' + arg
 
@@ -50,22 +50,26 @@ def banner():
 
 
 def help():
-    print '-n <hub,ahub,leaf>'
+    print '-a [network]'
     print '  Creates a new bot'
     print '-u <filename>'
     print '  Updates a file from the remote repository'
     print '-s <botnick>'
     print '  Starts a bot. <botnick> is Case Sensitive'
 
-def viper_new(type='leaf'):
-    print 'Creating new ' + type + ' ...'
+def viperNewNetwork():
+    print ' '
 
+def viperNewBot(network):
+    print 'Creating bot for network: ' + network + ' ...'
 
-def viper_update(file):
+def viperUpdate(file):
     print 'Updating ' + file
 
-def viper_start(botnick):
+def viperStart(botnick):
     print 'Starting ' + botnick
+    sbot = Bot(botnick)
+    sbot.start()
 
 
 if __name__ == "__main__":

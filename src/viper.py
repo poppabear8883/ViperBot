@@ -97,37 +97,40 @@ def setup():
     print '# Lets setup the Hub Bot first'
     print ' '
     # hubnick = newBot(network)
-    tBot = Bot('ViperHub')
-    tBot.NETWORK = 'Freenode'
-    tBot.NATIP = ''
-    tBot.OWNER = 'Poppabear, PoppaWork'
-    tBot.EMAIL = 'servnx@gmail.com'
-    tBot.IP = '162.243.241.68'
-    tBot.PORT = '3456'
-    tBot.PREFERIPV6 = '0'
-    tBot.LISTENADDR = ''
-    tBot.ISV6 = False
-    tBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+    hubBot = Bot('ViperHub')
+    hubBot.NETWORK = 'Freenode'
+    hubBot.NATIP = ''
+    hubBot.OWNER = 'Poppabear, PoppaWork'
+    hubBot.EMAIL = 'servnx@gmail.com'
+    hubBot.IP = '162.243.241.68'
+    hubBot.PORT = '3456'
+    hubBot.PREFERIPV6 = '0'
+    hubBot.LISTENADDR = ''
+    hubBot.ISV6 = False
+    hubBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
 
-    tBot.create('hub')
+    hubBot.create('hub')
 
     print ' '
     print '# and now the AltHub bot'
     print ' '
     # althubnick = newBot(network)
-    tBot = Bot('ViperAltHub')
-    tBot.NETWORK = 'Freenode'
-    tBot.NATIP = ''
-    tBot.OWNER = 'Poppabear, PoppaWork'
-    tBot.EMAIL = 'servnx@gmail.com'
-    tBot.IP = '162.243.241.68'
-    tBot.PORT = '3457'
-    tBot.PREFERIPV6 = '0'
-    tBot.LISTENADDR = ''
-    tBot.ISV6 = False
-    tBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+    ahubBot = Bot('ViperAltHub')
+    ahubBot.NETWORK = 'Freenode'
+    ahubBot.NATIP = ''
+    ahubBot.OWNER = 'Poppabear, PoppaWork'
+    ahubBot.EMAIL = 'servnx@gmail.com'
+    ahubBot.IP = '162.243.241.68'
+    ahubBot.PORT = '3457'
+    ahubBot.PREFERIPV6 = '0'
+    ahubBot.LISTENADDR = ''
+    ahubBot.ISV6 = False
+    ahubBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
 
-    tBot.create('althub')
+    ahubBot.create('althub')
+
+    hubBot.start('-m')
+    ahubBot.start()
 
     # Home Directory
     os.chdir(conf.HOME)

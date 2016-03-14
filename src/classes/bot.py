@@ -23,6 +23,8 @@ class Bot:
         self.PREFERIPV6 = '0'
         self.SERVERS = ''
 
+        self.__INSTALLDIR__ = conf.VIPER_INSTALL_DIRECTORY
+
     def botnetTemplateVars(self):
 
         return {
@@ -39,8 +41,7 @@ class Bot:
         }
 
     def botTemplateVars(self):
-        INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
-        VIPERPATH = INSTALLDIR + '/viperbot'
+        VIPERPATH = self.__INSTALLDIR__ + '/viperbot'
         return {
             '{{%VIPERPATH%}}':VIPERPATH,
             '{{%NETWORK%}}':self.NETWORK,
@@ -59,11 +60,9 @@ class Bot:
     def create(self, type):
 
         print 'Creating ' + self.BOTNICK + '.conf ...'
-        INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
-
-        network_path = INSTALLDIR + '/networks/' + self.NETWORK + '/'
-        viperbot_conf = INSTALLDIR + '/configs/viperbot.conf'
-        botnet_conf = INSTALLDIR + '/configs/botnet.conf'
+        network_path = self.__INSTALLDIR__ + '/networks/' + self.NETWORK + '/'
+        viperbot_conf = self.__INSTALLDIR__ + '/configs/viperbot.conf'
+        botnet_conf = self.__INSTALLDIR__ + '/configs/botnet.conf'
 
         botnick_conf = self.BOTNICK + '.conf'
         netbotnet_conf = self.NETWORK + '-botnet.conf'
@@ -94,13 +93,14 @@ class Bot:
                 print ' '
                 self.PASS = inputs.passwordInput('Password: ')
 
-            netnew_conf = ''
 
             f = open(netbotnet_conf)
-            netnew_conf = f.read()
+            net_conf = f.read()
             f.close()
 
-            for line in netnew_conf.splitlines():
+            netnew_conf = ''
+
+            for line in net_conf.splitlines():
                 for k, v in self.botnetTemplateVars().items():
                     if k in line and not 'ALTHUB' in line:
                         line = line.replace(k, v)
@@ -111,14 +111,16 @@ class Bot:
             f.write(netnew_conf)
             f.close()
 
+
         if type == 'althub':
-            netnew_conf = ''
 
             f = open(netbotnet_conf)
-            netnew_conf = f.read()
+            net_conf = f.read()
             f.close()
 
-            for line in netnew_conf.splitlines():
+            netnew_conf = ''
+
+            for line in net_conf.splitlines():
                 for k, v in self.botnetTemplateVars().items():
                     if k in line and 'ALTHUB' in line:
                         line = line.replace(k, v)
@@ -161,20 +163,21 @@ class Bot:
         print '***************************************************'
         print ' '
 
-        if type == 'hub':
-            self.start(self.NETWORK, self.BOTNICK, '-m')
-        else:
-            self.start(self.NETWORK, self.BOTNICK)
+        if not type == 'hub':
+            if not os.path.exists(self.BOTNICK + '.user'):
+                os.system('touch ' + self.BOTNICK + '.user')
+                os.chmod(self.BOTNICK + '.user', 0600)
+                helpers.appendToFile(self.BOTNICK + '.user',
+                                     '#4v: eggdrop v1.8.0+tclconfig -- '+self.BOTNICK+' -- written ')
 
-        os.chdir(INSTALLDIR)
+        os.chdir(self.__INSTALLDIR__)
 
-    def start(self, network, botnick, mode=''):
-        INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
-        network_path = INSTALLDIR + '/networks/' + network + '/'
+    def start(self, mode=''):
+        network_path = self.__INSTALLDIR__ + '/networks/' + self.NETWORK + '/'
         os.chdir(network_path)
 
-        print 'Starting ' + botnick
-        os.system('./'+botnick+'.conf ' + mode)
+        print 'Starting ' + self.BOTNICK
+        os.system('./'+self.BOTNICK+'.conf ' + mode)
 
     def editBotConfig(self, network, botnick, search, replace, isCSV=False):
         INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
