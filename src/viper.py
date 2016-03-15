@@ -11,7 +11,6 @@ import conf
 
 import libs.helpers as helper
 import libs.inputs as inputs
-
 from classes.bot import Bot
 
 def build():

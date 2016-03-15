@@ -1,9 +1,8 @@
 import os
 
-from tempfile import mkstemp
-from src import conf
-from src.libs import helpers
-from src.libs import inputs
+import conf
+from libs import helpers
+from libs import inputs
 
 class Bot:
 

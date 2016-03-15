@@ -3,7 +3,7 @@ import tarfile
 import os
 import sys
 
-from src import conf
+import conf
 
 def internet_on():
     try:
