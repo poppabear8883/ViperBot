@@ -1,6 +1,8 @@
 import os
 
 import conf
+import subprocess, signal
+
 from libs import helpers
 from libs import inputs
 
@@ -177,6 +179,17 @@ class Bot:
 
         print 'Starting ' + self.BOTNICK
         os.system('./'+self.BOTNICK+'.conf ' + mode)
+
+    def stop(self, botnick):
+        p = subprocess.Popen(['ps', 'x'], stdout=subprocess.PIPE)
+        out, err = p.communicate()
+        for line in out.splitlines():
+            if botnick+'.conf' in line:
+                pid = int(line.split(None, 1)[0])
+                os.kill(pid, signal.SIGTERM)
+                return True
+
+        return False
 
     def editBotConfig(self, network, botnick, search, replace, isCSV=False):
         INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
