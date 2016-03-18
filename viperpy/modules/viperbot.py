@@ -1,15 +1,17 @@
-import conf, sys, os
-import subprocess, signal
+import os
+import signal
+import subprocess
 
-import viper
-from libs import cmd
-from classes.bot import Bot
-from libs.termcolor import colored
-from classes.network import Network
+from network import Network
+from tools import cmd
+from tools.termcolor import colored
+
+import conf
+
 
 class ViperBot(cmd.Cmd):
 
-    intro = colored('v'+conf.VIPER_VERSION + ' (c) 2016 Poppabear @ Freenode Irc Network\n' \
+    intro = colored('v' + conf.VIPER_VERSION + ' (c) 2016 Poppabear @ Freenode Irc Network\n' \
         '____   ____ .__                             __________             __\n' \
         '\   \ /   / |__| ______     ____   _______  \______   \   ____   _/  |_\n' \
         ' \   Y   /  |  | \____ \  _/ __ \  \_  __ \  |    |  _/  /  _ \  \   __/\n' \
@@ -71,7 +73,7 @@ class ViperBot(cmd.Cmd):
             print '*** Also See: "? list" , "? network"'
         else:
             self.network = network
-            self.network_path = conf.VIPER_NETWORKS_DIRECTORY+'/'+network+'/'
+            self.network_path = conf.VIPER_NETWORKS_DIRECTORY + '/' + network + '/'
 
             print 'Switching to the network prompt ...'
             print ' '
@@ -87,7 +89,7 @@ class ViperBot(cmd.Cmd):
             print '*** Also See: "? list" , "? network"'
         else:
             self.network = network
-            self.network_path = conf.VIPER_NETWORKS_DIRECTORY+'/'+network+'/'
+            self.network_path = conf.VIPER_NETWORKS_DIRECTORY + '/' + network + '/'
 
             print 'Switching to the network prompt ...'
             print ' '

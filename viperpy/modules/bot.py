@@ -1,9 +1,12 @@
 import os
-import subprocess, signal
+import signal
+import subprocess
+
+from tools import helpers
+from tools import inputs
 
 import conf
-from libs import helpers
-from libs import inputs
+
 
 class Bot:
 
@@ -41,7 +44,7 @@ class Bot:
         }
 
     def botTemplateVars(self):
-        VIPERPATH = self.__INSTALLDIR__ + '/viperbot'
+        VIPERPATH = self.__INSTALLDIR__ + '/viper'
         return {
             '{{%VIPERPATH%}}':VIPERPATH,
             '{{%NETWORK%}}':self.NETWORK,
@@ -168,7 +171,7 @@ class Bot:
                 os.system('touch ' + self.BOTNICK + '.user')
                 os.chmod(self.BOTNICK + '.user', 0600)
                 helpers.appendToFile(self.BOTNICK + '.user',
-                                     '#4v: eggdrop v1.8.0+tclconfig -- '+self.BOTNICK+' -- written ')
+                                     '#4v: eggdrop v1.8.0+tclconfig -- ' + self.BOTNICK +' -- written ')
 
         os.chdir(self.__INSTALLDIR__)
 

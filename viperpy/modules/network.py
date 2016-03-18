@@ -1,5 +1,5 @@
-from libs import cmd
-from libs.termcolor import colored
+from tools import cmd
+from tools.termcolor import colored
 
 class Network(cmd.Cmd):
 

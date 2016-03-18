@@ -6,20 +6,26 @@ THIS FILE SHOULD NOT BE EDITED BY THE USER!
 EDITING THIS FILE COULD CORRUPT YOUR VIPERBOT INSTALL.
 """
 import os
+import subprocess
 import sys
+
+from distutils.dir_util import copy_tree
+from distutils.file_util import copy_file
+
+from bot import Bot
+from tools import inputs
+
 import conf
 
-import libs.helpers as helper
-import libs.inputs as inputs
-from classes.bot import Bot
 
+# todo: check_call() instead of call() -> wrap in try except, catch exceptions
 def build():
-    print '[ViperBot] Installing ...'
+    print '[ViperBot] Installing ... ' + os.getcwd()
     print ' '
 
     # CD into ViperBot SRC Directory
-    print '[ViperBot] Changing to: ' + conf.VIPER_SRC_DIRECTORY
-    os.chdir(conf.VIPER_SRC_DIRECTORY)
+    # print '[ViperBot] Changing to: ' + conf.VIPER_SRC_DIRECTORY
+    os.chdir('../')
 
     print ' '
     print '***************************************************************************'
@@ -34,20 +40,28 @@ def build():
     disable_tls = raw_input('Would you like to disable TLS? (y/N): ')
     print '[ViperBot] Configuring ...'
     if disable_tls == 'y' or disable_tls == 'Y':
-        os.system('./configure --disable-tls')
+        subprocess.call(['./configure', '--disable-tls'])
     else:
-        os.system('./configure')
+        subprocess.call('./configure')
 
-    print '[ViperBot] Building ...'
-    os.system('make config')
-    os.system('make static')
-    os.system('make install DEST=' + conf.VIPER_INSTALL_DIRECTORY)
+    print '[ViperBot] Building ... ' + os.getcwd()
+    subprocess.call(['make', 'config'])
+    subprocess.call(['make', 'static'])
+    subprocess.call(['make', 'install', 'DEST=' + conf.VIPER_INSTALL_DIRECTORY])
 
     if not disable_tls == 'y' or not disable_tls == 'Y':
         print '[ViperBot] Generating SSL Certificates ...'
-        os.system('make sslcert DEST=' + conf.VIPER_INSTALL_DIRECTORY)
+        subprocess.call(['make', 'sslcert', 'DEST=' + conf.VIPER_INSTALL_DIRECTORY])
 
     if os.path.exists(conf.VIPER_INSTALL_DIRECTORY):
+        os.chmod('viperbot.py', 0774)
+        os.chmod('./viperpy/main.py', 0744)
+        os.chmod('./viperpy/install.py', 0744)
+
+        copy_file('viperbot.py', conf.VIPER_INSTALL_DIRECTORY)
+        os.mkdir(conf.VIPER_INSTALL_DIRECTORY + '/viperpy')
+        copy_tree('./viperpy', conf.VIPER_INSTALL_DIRECTORY + '/viperpy')
+
         print ' '
         print '***************************************************************************'
         print '[ViperBot] Yay! Installion of ViperBot was Successful ...'
@@ -68,9 +82,6 @@ def build():
 def setup():
     print '[Viperbot] Changing to: ' + conf.VIPER_INSTALL_DIRECTORY
     os.chdir(conf.VIPER_INSTALL_DIRECTORY)
-
-    # we need to make sure that viperbot.py is executable
-    os.chmod('viperbot.py', 0774)
 
     print ' '
     print '***************************************************************************'

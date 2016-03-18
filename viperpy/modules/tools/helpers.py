@@ -1,9 +1,5 @@
 import urllib2
 import tarfile
-import os
-import sys
-
-import conf
 
 def internet_on():
     try:
