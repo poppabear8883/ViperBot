@@ -1,0 +1,25 @@
+High:
+todo: start viperbot.py main program
+todo: symlinks to programs ??
+todo: clean up code, create broken down methods
+todo: get rid of temporary code
+todo: rename/refactor some file names ??
+todo: brainstorm workflow idea's
+
+Medium:
+todo: search & replace eggdrop -> viperbot
+todo: document all code
+todo: change help files to include new cmds
+
+
+Low:
+todo: create & modify existing docs
+
+
+Maybe:
+
+
+Milestones:
+todo: get main program workflow coded
+todo: cleanup all code
+complete: get basic Hub and AltHub connected and linked

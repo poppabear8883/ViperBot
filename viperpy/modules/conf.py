@@ -13,15 +13,17 @@ HOME = os.getenv("HOME") + '/'
 # ViperBot's Version
 VIPER_VERSION = '1.0'
 
-#ViperBot's src Directory
-VIPER_SRC_DIRECTORY = 'src/'
-
 # ViperBot's Install Directory
 VIPER_INSTALL_DIRECTORY = HOME + "viperbot"
 
-VIPER_CONFIG_DIRECTORY = 'configs'
+#ViperBot's src Directory
+VIPER_SRC_DIRECTORY = '../src'
 
-VIPER_GLOBAL_CONFIG = VIPER_CONFIG_DIRECTORY + '/global.conf'
+VIPER_NETWORKS_DIRECTORY = VIPER_INSTALL_DIRECTORY + '/networks'
+
+VIPER_CORE_SCRIPTS_DIRECTORY = VIPER_INSTALL_DIRECTORY + '/scripts'
+
+VIPER_CONFIG_DIRECTORY = VIPER_INSTALL_DIRECTORY + '/configs'
 
 VIPER_BOTNET_CONFIG = VIPER_CONFIG_DIRECTORY + '/botnet.conf'
 
