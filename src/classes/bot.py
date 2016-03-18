@@ -1,8 +1,7 @@
 import os
-
-import conf
 import subprocess, signal
 
+import conf
 from libs import helpers
 from libs import inputs
 

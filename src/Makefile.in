@@ -313,7 +313,7 @@ sinstall: static ainstall
 
 ainstall: install-start install-bin install-modules install-data \
 install-help install-language install-filesys install-doc \
-install-scripts install-end
+install-scripts install-classes install-end
 
 install-start:
 	@if test ! -f $(EGGEXEC); then \
@@ -405,16 +405,6 @@ install-data:
 	fi
 	@if test ! -f $(DEST)/conf.py; then \
 		$(INSTALL_DATA) $(srcdir)/conf.py $(DEST)/; \
-	fi
-	@if test ! -d $(DEST)/classes; then \
-		echo "Creating 'classes' subdirectory."; \
-		$(top_srcdir)/misc/mkinstalldirs $(DEST)/classes >/dev/null; \
-	fi;
-	@if test ! -f $(DEST)/classes/__init__.py; then \
-		$(INSTALL_DATA) $(srcdir)/classes/__init__.py $(DEST)/classes/; \
-	fi
-	@if test ! -f $(DEST)/classes/bot.py; then \
-		$(INSTALL_DATA) $(srcdir)/classes/bot.py $(DEST)/classes/; \
 	fi
 	@if test ! -d $(DEST)/libs; then \
 		echo "Creating 'libs' subdirectory."; \
@@ -520,6 +510,9 @@ install-doc:
 
 install-scripts:
 	@cd scripts/ && $(MAKE_INSTALL) install
+
+install-classes:
+	@cd classes/ && $(MAKE_INSTALL) install
 
 install-end:
 	@echo
