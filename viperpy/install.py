@@ -9,7 +9,7 @@ EDITING THIS FILE COULD CORRUPT YOUR VIPERBOT INSTALL.
 import os
 import sys
 
-from modules import conf, viper
+from modules import viper
 
 # Main program entry point
 def main(argv):
@@ -40,7 +40,7 @@ def viper_install():
     #     print 'An internet connection is required to install ViperBot.'
     #     sys.exit(0)
 
-    if os.path.exists(conf.VIPER_INSTALL_DIRECTORY):
+    if os.path.exists(viper._INSTALL_DIR):
         print 'Viperbot is already installed.'
         print ' '
 
@@ -59,10 +59,10 @@ def viper_install():
         sys.exit(0)
 
 def viper_reinstall():
-    if os.path.exists(conf.HOME + '/viperbot_old'):
-        os.system('rm -rf ' + conf.HOME + '/viperbot_old')
+    if os.path.exists(viper._HOME + '/viperbot_old'):
+        os.system('rm -rf ' + viper._HOME + '/viperbot_old')
 
-    os.rename(conf.VIPER_INSTALL_DIRECTORY, conf.HOME + '/viperbot_old')
+    os.rename(viper._INSTALL_DIR, viper._HOME + '/viperbot_old')
     viper.build()
 
 if __name__ == "__main__":

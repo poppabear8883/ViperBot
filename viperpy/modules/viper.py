@@ -15,8 +15,27 @@ from distutils.file_util import copy_file
 from bot import Bot
 from tools import inputs
 
-import conf
+# Users Home Directory
+_HOME = os.getenv("HOME") + '/'
 
+# ViperBot's Version
+_VERSION = '1.0'
+
+# ViperBot's Install Directory
+_INSTALL_DIR = _HOME + "viperbot"
+
+#ViperBot's src Directory
+_SRC_DIR = '../src'
+
+_NETWORKS_DIR = _INSTALL_DIR + '/networks'
+
+_CORE_SCRIPTS_DIR = _INSTALL_DIR + '/scripts'
+
+_CONFIG_DIR = _INSTALL_DIR + '/configs'
+
+_BOTNET_CONFIG = _CONFIG_DIR + '/botnet.conf'
+
+_CONF = _CONFIG_DIR + '/viperbot.conf'
 
 # todo: check_call() instead of call() -> wrap in try except, catch exceptions
 def build():
@@ -47,27 +66,27 @@ def build():
     print '[ViperBot] Building ... ' + os.getcwd()
     subprocess.call(['make', 'config'])
     subprocess.call(['make', 'static'])
-    subprocess.call(['make', 'install', 'DEST=' + conf.VIPER_INSTALL_DIRECTORY])
+    subprocess.call(['make', 'install', 'DEST=' + _INSTALL_DIR])
 
     if not disable_tls == 'y' or not disable_tls == 'Y':
         print '[ViperBot] Generating SSL Certificates ...'
-        subprocess.call(['make', 'sslcert', 'DEST=' + conf.VIPER_INSTALL_DIRECTORY])
+        subprocess.call(['make', 'sslcert', 'DEST=' + _INSTALL_DIR])
 
-    if os.path.exists(conf.VIPER_INSTALL_DIRECTORY):
+    if os.path.exists(_INSTALL_DIR):
         os.chmod('viperbot.py', 0774)
         os.chmod('./viperpy/main.py', 0744)
         os.chmod('./viperpy/install.py', 0744)
 
-        copy_file('viperbot.py', conf.VIPER_INSTALL_DIRECTORY)
-        os.mkdir(conf.VIPER_INSTALL_DIRECTORY + '/viperpy')
-        copy_tree('./viperpy', conf.VIPER_INSTALL_DIRECTORY + '/viperpy')
+        copy_file('viperbot.py', _INSTALL_DIR)
+        os.mkdir(_INSTALL_DIR + '/viperpy')
+        copy_tree('./viperpy', _INSTALL_DIR + '/viperpy')
 
         print ' '
         print '***************************************************************************'
         print '[ViperBot] Yay! Installion of ViperBot was Successful ...'
         print '***************************************************************************'
         print ' '
-        print '[ViperBot] has been Installed to: ' + conf.VIPER_INSTALL_DIRECTORY
+        print '[ViperBot] has been Installed to: ' + _INSTALL_DIR
         print ' '
     else:
         print '[ViperBot] Fatal Error: INSTALL FAILED!'
@@ -80,8 +99,8 @@ def build():
     sys.exit(0)
 
 def setup():
-    print '[Viperbot] Changing to: ' + conf.VIPER_INSTALL_DIRECTORY
-    os.chdir(conf.VIPER_INSTALL_DIRECTORY)
+    print '[Viperbot] Changing to: ' + _INSTALL_DIR
+    os.chdir(_INSTALL_DIR)
 
     print ' '
     print '***************************************************************************'
@@ -143,17 +162,17 @@ def setup():
     ahubBot.start()
 
     # Home Directory
-    os.chdir(conf.HOME)
+    os.chdir(_HOME)
 
     print ' '
     print '***************************************************************************'
     print 'You have completed the setup process. You can now go to\n' \
-          ' ' + conf.VIPER_INSTALL_DIRECTORY + ' and run ./viperbot.py'
+          ' ' + _INSTALL_DIR + ' and run ./viperbot.py'
     print '***************************************************************************'
     print ' '
 
 def newNetwork():
-    os.chdir(conf.VIPER_INSTALL_DIRECTORY)
+    os.chdir(_INSTALL_DIR)
     network = ''
 
     while True:
@@ -172,7 +191,7 @@ def newNetwork():
     return network
 
 def newBot(network):
-    INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
+    INSTALLDIR = _INSTALL_DIR
     os.chdir(INSTALLDIR)
 
     botnick = ''
@@ -227,10 +246,3 @@ def newBot(network):
     bot_o.create('hub')
 
     return botnick
-
-'''
-***************************
-    end of main program
-***************************
-'''
-# HELPERS

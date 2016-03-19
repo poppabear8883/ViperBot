@@ -20,6 +20,7 @@ def yesNoInput(question):
     print ' '
     return data
 
+
 def passwordInput(question):
     data = ''
 
@@ -44,6 +45,23 @@ def alphaNumInput(question):
         data = raw_input(question)
         if not data.isalnum():
             print 'Must be an Alphanumeric value!'
+            continue
+        elif '' == data:
+            print 'Can not be empty!'
+            continue
+        else:
+            break
+
+    print ' '
+    return data
+
+def numInput(question):
+    data = ''
+
+    while True:
+        data = raw_input(question)
+        if not data.isdigit():
+            print 'Must be an Number (integer/digit)'
             continue
         elif '' == data:
             print 'Can not be empty!'
