@@ -191,3 +191,14 @@ class Bot:
                 return True
 
         return False
+
+    def rehash(self):
+        p = subprocess.Popen(['ps', 'x'], stdout=subprocess.PIPE)
+        out, err = p.communicate()
+        for line in out.splitlines():
+            if self.BOTNICK + '.conf' in line:
+                pid = int(line.split(None, 1)[0])
+                os.kill(pid, signal.SIGHUP)
+                return True
+
+        return False
