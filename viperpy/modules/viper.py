@@ -127,18 +127,14 @@ def setup(network):
     print ' '
     print '# Lets setup the Hub Bot first'
     print ' '
-    hubBot = newBot(network)
+    hubBot = newBot(network, '', 'hub')
     # hubBot = tmpHub()
-
-    hubBot.create('hub')
 
     print ' '
     print '# and now the AltHub bot'
     print ' '
-    ahubBot = newBot(network)
+    ahubBot = newBot(network, '', 'althub')
     # ahubBot = tmpAltHub()
-
-    ahubBot.create('althub')
 
     hubBot.start('-m')
     ahubBot.start()
@@ -174,62 +170,10 @@ def newNetwork():
 
     return network
 
-def newBot(network, botnick=''):
-    INSTALLDIR = _INSTALL_DIR
-    os.chdir(INSTALLDIR)
-
-    if botnick == '':
-        while True:
-            botnick = inputs.alphaNumInput('Bot\'s Nick: ')
-            botnick_conf = INSTALLDIR+'/'+network+'/'+botnick+'.conf'
-            if os.path.exists(botnick_conf):
-                print 'This botnick already exists!'
-                continue
-            else:
-                break
-
-    # Create a Bot Object
-    bot_o = Bot(botnick)
-
-    bot_o.NETWORK = network
-
-    bot_o.OWNER = inputs.alphaNumInput('Owner\'s Nick: ')
-    bot_o.EMAIL = inputs.emailInput('Owner\'s Email: ')
-
-    v4v6 = inputs.yesNoInput('Is this bot using IPv6? (y/N): ')
-    if v4v6 == 'y' or v4v6 == 'Y':
-        preferipv6 = inputs.yesNoInput('Do you prefer IPv6 over IPv4? (y/N): ')
-        bot_o.ISV6 = True
-        if preferipv6 == 'y' or preferipv6 == 'Y':
-            bot_o.PREFERIPV6 = True
-
-    bot_o.IP = inputs.ipInput('IP: ')
-
-    bot_o.PORT = inputs.portInput('Port: ')
-
-    nat = inputs.yesNoInput('Is this bot behind a NAT? (y/N): ')
-    if nat == 'y' or nat == 'Y':
-        bot_o.NATIP = inputs.ipInput('NAT IP: ')
-
-    print '---------------------------------------------------------'
-    print ' Here you will list the servers that this bot will\n' \
-          ' attempt to connect to.\n' \
-          '\n' \
-          'Syntax: server:port'
-    print 'Example: irc.freenode.net:6667,irc.freenode.net:6697\n' \
-          '\n' \
-          'Note: Do Not use spaces!'
-    print '---------------------------------------------------------'
-    print ' '
-
-    servers = inputs.serversInput('Servers: ')
-    bot_o.SERVERS = servers
-
-    # Lets create our new bot!
-    bot_o.create('hub')
-
-    return bot_o
-
+def newBot(network, botnick='', type='leaf'):
+    bot = Bot(botnick)
+    bot.new(network, botnick, type)
+    return bot
 
 # for debugging and testing
 def tmpHub():

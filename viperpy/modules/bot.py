@@ -59,7 +59,64 @@ class Bot:
             '{{%LISTENADDR%}}':self.LISTENADDR
         }
 
-    def create(self, type='leaf'):
+    def new(self, network, botnick='', type='leaf'):
+        print 'new() [DEBUG] Type: ' + type
+
+        INSTALLDIR = viper._INSTALL_DIR
+        os.chdir(INSTALLDIR)
+
+        if botnick == '':
+            while True:
+                botnick = inputs.alphaNumInput('Bot\'s Nick: ')
+                botnick_conf = INSTALLDIR+'/'+network+'/'+botnick+'.conf'
+                if os.path.exists(botnick_conf):
+                    print 'This botnick already exists!'
+                    continue
+                else:
+                    break
+
+        # Create a Bot Object
+        self.BOTNICK = botnick
+
+        self.NETWORK = network
+
+        self.OWNER = inputs.alphaNumInput('Owner\'s Nick: ')
+        self.EMAIL = inputs.emailInput('Owner\'s Email: ')
+
+        v4v6 = inputs.yesNoInput('Is this bot using IPv6? (y/N): ')
+        if v4v6 == 'y' or v4v6 == 'Y':
+            preferipv6 = inputs.yesNoInput('Do you prefer IPv6 over IPv4? (y/N): ')
+            self.ISV6 = True
+            if preferipv6 == 'y' or preferipv6 == 'Y':
+                self.PREFERIPV6 = True
+
+        self.IP = inputs.ipInput('IP: ')
+
+        self.PORT = inputs.portInput('Port: ')
+
+        nat = inputs.yesNoInput('Is this bot behind a NAT? (y/N): ')
+        if nat == 'y' or nat == 'Y':
+            self.NATIP = inputs.ipInput('NAT IP: ')
+
+        print '---------------------------------------------------------'
+        print ' Here you will list the servers that this bot will\n' \
+              ' attempt to connect to.\n' \
+              '\n' \
+              'Syntax: server:port'
+        print 'Example: irc.freenode.net:6667,irc.freenode.net:6697\n' \
+              '\n' \
+              'Note: Do Not use spaces!'
+        print '---------------------------------------------------------'
+        print ' '
+
+        servers = inputs.serversInput('Servers: ')
+        self.SERVERS = servers
+
+        self.create(type)
+
+    def create(self, type):
+
+        print 'create() [DEBUG] Type: ' + type
 
         print 'Creating ' + self.BOTNICK + '.conf ...'
         network_path = self.__INSTALLDIR__ + '/networks/' + self.NETWORK + '/'
@@ -73,8 +130,6 @@ class Bot:
 
         os.system('cp ' + viperbot_conf + ' ' + network_path)
         os.rename('viperbot.conf', botnick_conf)
-
-        print '[DEBUG] Type: ' + type
 
         # CREATE NETWORK-BOTNET.CONF
         if type == 'hub':

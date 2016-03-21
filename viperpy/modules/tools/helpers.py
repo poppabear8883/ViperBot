@@ -35,6 +35,7 @@ def editLineInConf(bot_path, lineNum, newLine):
     if os.path.exists(bot_path+'.tmp'):
         os.rename(bot_path, bot_path+'~bak')
         os.rename(bot_path+'.tmp', bot_path)
+        os.chmod(bot_path, 0744)
         print 'Done - ' + bot_path
     else:
         return False

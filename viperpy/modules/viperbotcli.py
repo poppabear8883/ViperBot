@@ -118,9 +118,9 @@ class NetworkCLI(cmd.Cmd):
 
     def do_new(self, botnick):
         if botnick == '':
-            bot_o = viper.newBot(self.network)
+            bot_o = viper.newBot(self.network, '', 'leaf')
         else:
-            bot_o = viper.newBot(self.network, botnick)
+            bot_o = viper.newBot(self.network, botnick, 'leaf')
 
         bot_o.start()
 
@@ -144,6 +144,7 @@ class NetworkCLI(cmd.Cmd):
             print '*** Can\'t find bot "'+botnick+'"! Make sure you have typed it correctly.'
             print '*** Also See: "? list" , "? bot"'
         else:
+            os.chdir(self.network_path)
             botnick = botnick
             bot_path = self.network_path + botnick+'.conf'
             bot = BotCLI(botnick, bot_path)
@@ -249,14 +250,32 @@ class BotCLI(cmd.Cmd):
     def emptyline(self):
         pass
 
-    def do_start(self, l):
-        self.bot.start()
+    def do_start(self, mode=''):
+        print 'do_start() [DEBUG]: ' + os.getcwd()
+
+        if not mode == '':
+            self.bot.start(mode)
+        else:
+            self.bot.start()
 
     def help_start(self):
         cprint('--------------------------------------\n'
-               '  start\n'
+               '  start [mode]\n'
                '--------------------------------------\n'
                '   Starts the current bot.\n'
+               '   Available [Optional] modes:\n'
+               '     -n\n'
+               '        Don\'t background.\n'
+               '     -nt\n'
+               '        Don\'t background, use terminal.\n'
+               '     -nc\n'
+               '        Don\'t background, show channel info.\n'
+               '     -m\n'
+               '        If you don\'t have a userfile, Create userfile.\n'
+               '     -h\n'
+               '        Show help\n'
+               '     -v\n'
+               '        Show version info, then quit.\n'
                '--------------------------------------\n', 'green')
 
     def do_stop(self, l):
