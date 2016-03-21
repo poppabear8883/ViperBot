@@ -4,8 +4,7 @@ import subprocess
 
 from tools import helpers
 from tools import inputs
-
-import conf
+import viper
 
 
 class Bot:
@@ -26,7 +25,7 @@ class Bot:
         self.PREFERIPV6 = '0'
         self.SERVERS = ''
 
-        self.__INSTALLDIR__ = conf.VIPER_INSTALL_DIRECTORY
+        self.__INSTALLDIR__ = viper._INSTALL_DIR
 
     def botnetTemplateVars(self):
 
@@ -60,7 +59,7 @@ class Bot:
             '{{%LISTENADDR%}}':self.LISTENADDR
         }
 
-    def create(self, type):
+    def create(self, type='leaf'):
 
         print 'Creating ' + self.BOTNICK + '.conf ...'
         network_path = self.__INSTALLDIR__ + '/networks/' + self.NETWORK + '/'
@@ -182,32 +181,24 @@ class Bot:
         print 'Starting ' + self.BOTNICK
         os.system('./'+self.BOTNICK+'.conf ' + mode)
 
-    def stop(self, botnick):
+    def stop(self):
         p = subprocess.Popen(['ps', 'x'], stdout=subprocess.PIPE)
         out, err = p.communicate()
         for line in out.splitlines():
-            if botnick+'.conf' in line:
+            if self.BOTNICK + '.conf' in line:
                 pid = int(line.split(None, 1)[0])
                 os.kill(pid, signal.SIGTERM)
                 return True
 
         return False
 
-    def editBotConfig(self, network, botnick, search, replace, isCSV=False):
-        INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
-        network_path = INSTALLDIR + '/networks/' + network + '/'
-        botnick_conf = botnick + '.conf'
+    def rehash(self):
+        p = subprocess.Popen(['ps', 'x'], stdout=subprocess.PIPE)
+        out, err = p.communicate()
+        for line in out.splitlines():
+            if self.BOTNICK + '.conf' in line:
+                pid = int(line.split(None, 1)[0])
+                os.kill(pid, signal.SIGHUP)
+                return True
 
-        os.chdir(network_path)
-
-    def findLinesInFile(self, filename, searchFor):
-        arr = []
-
-        with open(filename) as search:
-            for num, line in enumerate(search, 1):
-                line = line.rstrip()
-                if searchFor in line:
-                    if not line.startswith('#'):
-                        arr.append(num)
-
-        return arr
+        return False

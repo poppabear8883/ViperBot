@@ -2,10 +2,10 @@
 """
 viperbot.py (c) 2016 Poppabear @ Freenode Irc Network
 """
-from modules.viperbot import ViperBot
+from modules.viperbotcli import ViperBotCLI
 
 def main():
-    vb = ViperBot()
+    vb = ViperBotCLI()
     vb.cmdloop()
 
 if __name__ == '__main__':

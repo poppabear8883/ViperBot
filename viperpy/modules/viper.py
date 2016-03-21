@@ -15,8 +15,27 @@ from distutils.file_util import copy_file
 from bot import Bot
 from tools import inputs
 
-import conf
+# Users Home Directory
+_HOME = os.getenv("HOME") + '/'
 
+# ViperBot's Version
+_VERSION = '1.0'
+
+# ViperBot's Install Directory
+_INSTALL_DIR = _HOME + "viperbot"
+
+#ViperBot's src Directory
+_SRC_DIR = '../src'
+
+_NETWORKS_DIR = _INSTALL_DIR + '/networks'
+
+_CORE_SCRIPTS_DIR = _INSTALL_DIR + '/scripts'
+
+_CONFIG_DIR = _INSTALL_DIR + '/configs'
+
+_BOTNET_CONFIG = _CONFIG_DIR + '/botnet.conf'
+
+_CONF = _CONFIG_DIR + '/viperbot.conf'
 
 # todo: check_call() instead of call() -> wrap in try except, catch exceptions
 def build():
@@ -47,53 +66,55 @@ def build():
     print '[ViperBot] Building ... ' + os.getcwd()
     subprocess.call(['make', 'config'])
     subprocess.call(['make', 'static'])
-    subprocess.call(['make', 'install', 'DEST=' + conf.VIPER_INSTALL_DIRECTORY])
+    subprocess.call(['make', 'install', 'DEST=' + _INSTALL_DIR])
 
     if not disable_tls == 'y' or not disable_tls == 'Y':
         print '[ViperBot] Generating SSL Certificates ...'
-        subprocess.call(['make', 'sslcert', 'DEST=' + conf.VIPER_INSTALL_DIRECTORY])
+        subprocess.call(['make', 'sslcert', 'DEST=' + _INSTALL_DIR])
 
-    if os.path.exists(conf.VIPER_INSTALL_DIRECTORY):
+    if os.path.exists(_INSTALL_DIR):
         os.chmod('viperbot.py', 0774)
         os.chmod('./viperpy/main.py', 0744)
         os.chmod('./viperpy/install.py', 0744)
 
-        copy_file('viperbot.py', conf.VIPER_INSTALL_DIRECTORY)
-        os.mkdir(conf.VIPER_INSTALL_DIRECTORY + '/viperpy')
-        copy_tree('./viperpy', conf.VIPER_INSTALL_DIRECTORY + '/viperpy')
+        copy_file('viperbot.py', _INSTALL_DIR)
+        os.mkdir(_INSTALL_DIR + '/viperpy')
+        copy_tree('./viperpy', _INSTALL_DIR + '/viperpy')
 
         print ' '
         print '***************************************************************************'
         print '[ViperBot] Yay! Installion of ViperBot was Successful ...'
         print '***************************************************************************'
         print ' '
-        print '[ViperBot] has been Installed to: ' + conf.VIPER_INSTALL_DIRECTORY
+        print '[ViperBot] has been Installed to: ' + _INSTALL_DIR
         print ' '
     else:
         print '[ViperBot] Fatal Error: INSTALL FAILED!'
         sys.exit(0)
 
     # Start the setup process
-    setup()
-
-    # All Done!
-    sys.exit(0)
-
-def setup():
-    print '[Viperbot] Changing to: ' + conf.VIPER_INSTALL_DIRECTORY
-    os.chdir(conf.VIPER_INSTALL_DIRECTORY)
-
     print ' '
     print '***************************************************************************'
-    print ' Now that ViperBot is installed, we need to setup a Network.'
+    print ' Setup a Network.'
     print ' '
 
     network = newNetwork()
 
     print ' '
     print '***************************************************************************'
-    print ' Your new network has been added\n' \
-          ' Lets setup a Hub and AltHub for this network.'
+    print ' Your new network has been added'
+    print '***************************************************************************'
+
+    # All Done!
+    sys.exit(0)
+
+def setup(network):
+    print '[Viperbot] Changing to: ' + _INSTALL_DIR
+    os.chdir(_INSTALL_DIR)
+
+    print ' '
+    print '***************************************************************************'
+    print ' Lets setup a Hub and AltHub for this network.'
     print '***************************************************************************'
     print 'Note:'
     print ' Your Hub bot is what all other bots will link to, AltHub will be the bot '
@@ -106,36 +127,16 @@ def setup():
     print ' '
     print '# Lets setup the Hub Bot first'
     print ' '
-    # hubnick = newBot(network)
-    hubBot = Bot('ViperHub')
-    hubBot.NETWORK = 'Freenode'
-    hubBot.NATIP = ''
-    hubBot.OWNER = 'Poppabear, PoppaWork'
-    hubBot.EMAIL = 'servnx@gmail.com'
-    hubBot.IP = '162.243.241.68'
-    hubBot.PORT = '3456'
-    hubBot.PREFERIPV6 = '0'
-    hubBot.LISTENADDR = ''
-    hubBot.ISV6 = False
-    hubBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+    hubBot = newBot(network)
+    # hubBot = tmpHub()
 
     hubBot.create('hub')
 
     print ' '
     print '# and now the AltHub bot'
     print ' '
-    # althubnick = newBot(network)
-    ahubBot = Bot('ViperAltHub')
-    ahubBot.NETWORK = 'Freenode'
-    ahubBot.NATIP = ''
-    ahubBot.OWNER = 'Poppabear, PoppaWork'
-    ahubBot.EMAIL = 'servnx@gmail.com'
-    ahubBot.IP = '162.243.241.68'
-    ahubBot.PORT = '3457'
-    ahubBot.PREFERIPV6 = '0'
-    ahubBot.LISTENADDR = ''
-    ahubBot.ISV6 = False
-    ahubBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+    ahubBot = newBot(network)
+    # ahubBot = tmpAltHub()
 
     ahubBot.create('althub')
 
@@ -143,17 +144,17 @@ def setup():
     ahubBot.start()
 
     # Home Directory
-    os.chdir(conf.HOME)
+    os.chdir(_HOME)
 
     print ' '
     print '***************************************************************************'
     print 'You have completed the setup process. You can now go to\n' \
-          ' ' + conf.VIPER_INSTALL_DIRECTORY + ' and run ./viperbot.py'
+          ' ' + _INSTALL_DIR + ' and run ./viperbot.py'
     print '***************************************************************************'
     print ' '
 
 def newNetwork():
-    os.chdir(conf.VIPER_INSTALL_DIRECTORY)
+    os.chdir(_INSTALL_DIR)
     network = ''
 
     while True:
@@ -169,22 +170,23 @@ def newNetwork():
     os.mkdir('networks/'+network+'/logs')
     os.mkdir('networks/'+network+'/scripts')
 
+    setup(network)
+
     return network
 
-def newBot(network):
-    INSTALLDIR = conf.VIPER_INSTALL_DIRECTORY
+def newBot(network, botnick=''):
+    INSTALLDIR = _INSTALL_DIR
     os.chdir(INSTALLDIR)
 
-    botnick = ''
-
-    while True:
-        botnick = inputs.alphaNumInput('Bot\'s Nick: ')
-        botnick_conf = INSTALLDIR+'/'+network+'/'+botnick+'.conf'
-        if os.path.exists(botnick_conf):
-            print 'This botnick already exists!'
-            continue
-        else:
-            break
+    if botnick == '':
+        while True:
+            botnick = inputs.alphaNumInput('Bot\'s Nick: ')
+            botnick_conf = INSTALLDIR+'/'+network+'/'+botnick+'.conf'
+            if os.path.exists(botnick_conf):
+                print 'This botnick already exists!'
+                continue
+            else:
+                break
 
     # Create a Bot Object
     bot_o = Bot(botnick)
@@ -226,11 +228,36 @@ def newBot(network):
     # Lets create our new bot!
     bot_o.create('hub')
 
-    return botnick
+    return bot_o
 
-'''
-***************************
-    end of main program
-***************************
-'''
-# HELPERS
+
+# for debugging and testing
+def tmpHub():
+    hubBot = Bot('ViperHub')
+    hubBot.NETWORK = 'Freenode'
+    hubBot.NATIP = ''
+    hubBot.OWNER = 'Poppabear, PoppaWork'
+    hubBot.EMAIL = 'servnx@gmail.com'
+    hubBot.IP = '162.243.241.68'
+    hubBot.PORT = '3456'
+    hubBot.PREFERIPV6 = '0'
+    hubBot.LISTENADDR = ''
+    hubBot.ISV6 = False
+    hubBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+
+    return hubBot
+
+def tmpAltHub():
+    ahubBot = Bot('ViperAltHub')
+    ahubBot.NETWORK = 'Freenode'
+    ahubBot.NATIP = ''
+    ahubBot.OWNER = 'Poppabear, PoppaWork'
+    ahubBot.EMAIL = 'servnx@gmail.com'
+    ahubBot.IP = '162.243.241.68'
+    ahubBot.PORT = '3457'
+    ahubBot.PREFERIPV6 = '0'
+    ahubBot.LISTENADDR = ''
+    ahubBot.ISV6 = False
+    ahubBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+
+    return ahubBot

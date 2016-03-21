@@ -1,5 +1,45 @@
 import urllib2
 import tarfile
+import os
+
+def findLinesInConf(bot_path, searchFor):
+    dict = {}
+
+    with open(bot_path) as search:
+        for num, line in enumerate(search, 1):
+            line = line.rstrip()
+            if searchFor in line:
+                if not line.startswith('#'):
+                    dict[num] = line
+
+    return dict
+
+def getLineInConf(bot_path, lineNum):
+    with open(bot_path) as search:
+        for num, line in enumerate(search, 1):
+            line = line.rstrip()
+            if int(num) == int(lineNum):
+                return line
+
+    return ''
+
+def editLineInConf(bot_path, lineNum, newLine):
+    with open(bot_path+'.tmp', 'w') as fin:
+        with open(bot_path, 'r') as fout:
+            for num, line in enumerate(fout, 1):
+                if int(num) == int(lineNum):
+                    line = line.replace(line, newLine+'\n')
+
+                fin.write(line)
+
+    if os.path.exists(bot_path+'.tmp'):
+        os.rename(bot_path, bot_path+'~bak')
+        os.rename(bot_path+'.tmp', bot_path)
+        print 'Done - ' + bot_path
+    else:
+        return False
+
+    return True
 
 def internet_on():
     try:
