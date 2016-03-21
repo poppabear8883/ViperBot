@@ -93,26 +93,28 @@ def build():
         sys.exit(0)
 
     # Start the setup process
-    setup()
-
-    # All Done!
-    sys.exit(0)
-
-def setup():
-    print '[Viperbot] Changing to: ' + _INSTALL_DIR
-    os.chdir(_INSTALL_DIR)
-
     print ' '
     print '***************************************************************************'
-    print ' Now that ViperBot is installed, we need to setup a Network.'
+    print ' Setup a Network.'
     print ' '
 
     network = newNetwork()
 
     print ' '
     print '***************************************************************************'
-    print ' Your new network has been added\n' \
-          ' Lets setup a Hub and AltHub for this network.'
+    print ' Your new network has been added'
+    print '***************************************************************************'
+
+    # All Done!
+    sys.exit(0)
+
+def setup(network):
+    print '[Viperbot] Changing to: ' + _INSTALL_DIR
+    os.chdir(_INSTALL_DIR)
+
+    print ' '
+    print '***************************************************************************'
+    print ' Lets setup a Hub and AltHub for this network.'
     print '***************************************************************************'
     print 'Note:'
     print ' Your Hub bot is what all other bots will link to, AltHub will be the bot '
@@ -125,36 +127,16 @@ def setup():
     print ' '
     print '# Lets setup the Hub Bot first'
     print ' '
-    # hubnick = newBot(network)
-    hubBot = Bot('ViperHub')
-    hubBot.NETWORK = 'Freenode'
-    hubBot.NATIP = ''
-    hubBot.OWNER = 'Poppabear, PoppaWork'
-    hubBot.EMAIL = 'servnx@gmail.com'
-    hubBot.IP = '162.243.241.68'
-    hubBot.PORT = '3456'
-    hubBot.PREFERIPV6 = '0'
-    hubBot.LISTENADDR = ''
-    hubBot.ISV6 = False
-    hubBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+    hubBot = newBot(network)
+    # hubBot = tmpHub()
 
     hubBot.create('hub')
 
     print ' '
     print '# and now the AltHub bot'
     print ' '
-    # althubnick = newBot(network)
-    ahubBot = Bot('ViperAltHub')
-    ahubBot.NETWORK = 'Freenode'
-    ahubBot.NATIP = ''
-    ahubBot.OWNER = 'Poppabear, PoppaWork'
-    ahubBot.EMAIL = 'servnx@gmail.com'
-    ahubBot.IP = '162.243.241.68'
-    ahubBot.PORT = '3457'
-    ahubBot.PREFERIPV6 = '0'
-    ahubBot.LISTENADDR = ''
-    ahubBot.ISV6 = False
-    ahubBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+    ahubBot = newBot(network)
+    # ahubBot = tmpAltHub()
 
     ahubBot.create('althub')
 
@@ -188,22 +170,23 @@ def newNetwork():
     os.mkdir('networks/'+network+'/logs')
     os.mkdir('networks/'+network+'/scripts')
 
+    setup(network)
+
     return network
 
-def newBot(network):
+def newBot(network, botnick=''):
     INSTALLDIR = _INSTALL_DIR
     os.chdir(INSTALLDIR)
 
-    botnick = ''
-
-    while True:
-        botnick = inputs.alphaNumInput('Bot\'s Nick: ')
-        botnick_conf = INSTALLDIR+'/'+network+'/'+botnick+'.conf'
-        if os.path.exists(botnick_conf):
-            print 'This botnick already exists!'
-            continue
-        else:
-            break
+    if botnick == '':
+        while True:
+            botnick = inputs.alphaNumInput('Bot\'s Nick: ')
+            botnick_conf = INSTALLDIR+'/'+network+'/'+botnick+'.conf'
+            if os.path.exists(botnick_conf):
+                print 'This botnick already exists!'
+                continue
+            else:
+                break
 
     # Create a Bot Object
     bot_o = Bot(botnick)
@@ -245,4 +228,36 @@ def newBot(network):
     # Lets create our new bot!
     bot_o.create('hub')
 
-    return botnick
+    return bot_o
+
+
+# for debugging and testing
+def tmpHub():
+    hubBot = Bot('ViperHub')
+    hubBot.NETWORK = 'Freenode'
+    hubBot.NATIP = ''
+    hubBot.OWNER = 'Poppabear, PoppaWork'
+    hubBot.EMAIL = 'servnx@gmail.com'
+    hubBot.IP = '162.243.241.68'
+    hubBot.PORT = '3456'
+    hubBot.PREFERIPV6 = '0'
+    hubBot.LISTENADDR = ''
+    hubBot.ISV6 = False
+    hubBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+
+    return hubBot
+
+def tmpAltHub():
+    ahubBot = Bot('ViperAltHub')
+    ahubBot.NETWORK = 'Freenode'
+    ahubBot.NATIP = ''
+    ahubBot.OWNER = 'Poppabear, PoppaWork'
+    ahubBot.EMAIL = 'servnx@gmail.com'
+    ahubBot.IP = '162.243.241.68'
+    ahubBot.PORT = '3457'
+    ahubBot.PREFERIPV6 = '0'
+    ahubBot.LISTENADDR = ''
+    ahubBot.ISV6 = False
+    ahubBot.SERVERS = 'irc.freenode.net:6667,chat.us.freenode.net:6667'
+
+    return ahubBot

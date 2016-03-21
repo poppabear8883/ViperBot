@@ -116,6 +116,26 @@ class NetworkCLI(cmd.Cmd):
                '   "ls" and "bots" are aliases for "list"\n'
                '--------------------------------------\n', 'green')
 
+    def do_new(self, botnick):
+        if botnick == '':
+            bot_o = viper.newBot(self.network)
+        else:
+            bot_o = viper.newBot(self.network, botnick)
+
+        bot_o.start()
+
+    def help_new(self):
+        cprint('--------------------------------------\n'
+               '  new [botnick]\n'
+               '--------------------------------------\n'
+               '   Creates a new leaf bot.\n'
+               '   [botnick] is optional, not specifing\n'
+               '   not specifing [botnick] will simply\n'
+               '   ask for botnick when ran.\n'
+               '   Also See: "? list"\n'
+               '--------------------------------------\n', 'green')
+
+
     def do_bot(self, botnick):
         '    Switch to the specified bot: bot <botnick>'
         if botnick == '':
@@ -232,19 +252,60 @@ class BotCLI(cmd.Cmd):
     def do_start(self, l):
         self.bot.start()
 
+    def help_start(self):
+        cprint('--------------------------------------\n'
+               '  start\n'
+               '--------------------------------------\n'
+               '   Starts the current bot.\n'
+               '--------------------------------------\n', 'green')
+
     def do_stop(self, l):
         self.bot.stop()
 
+    def help_stop(self):
+        cprint('--------------------------------------\n'
+               '  stop\n'
+               '--------------------------------------\n'
+               '   Stops the current bot.\n'
+               '--------------------------------------\n', 'green')
+
     def do_rehash(self, l):
         self.bot.rehash()
+
+    def help_rehash(self):
+        cprint('--------------------------------------\n'
+               '  rehash\n'
+               '--------------------------------------\n'
+               '   Rehashes the current bot.\n'
+               '   Note: run this command after editing\n'
+               '   configuration settings.\n'
+               '\n'
+               '   Changes using "edit" will NOT take\n'
+               '   effect until you "rehash" or "restart"\n'
+               '\n'
+               '   See Also "? edit" , "? find"\n'
+               '--------------------------------------\n', 'green')
 
     def do_find(self, searchFor):
         dict = findLinesInConf(self.bot_path, searchFor)
         for k, v in dict.items():
             print '('+str(k)+')' + ' ' + v
 
-    def do_exit(self, line):
-        return True
+    def help_find(self):
+        cprint('--------------------------------------\n'
+               '  find <word or phrase>\n'
+               '--------------------------------------\n'
+               '   Searches the bots configuration file\n'
+               '   for the specified word or phrase.\n'
+               '     The results will show the line number\n'
+               '   and the line contents.\n'
+               '\n'
+               '   Example:\n'
+               '     Bot [ViperAltHub] > find username\n'
+                     '(31) set username "ViperAltHub"\n'
+               '\n'
+               '   See Also "? edit"\n'
+               '--------------------------------------\n', 'green')
 
     def do_edit(self, num):
         readline.set_pre_input_hook(lambda: readline.insert_text(getLineInConf(self.bot_path,num))
@@ -257,10 +318,30 @@ class BotCLI(cmd.Cmd):
 
         readline.set_pre_input_hook()
 
+    def help_edit(self):
+        cprint('--------------------------------------\n'
+               '  edit <line number>\n'
+               '--------------------------------------\n'
+               '   Edits the bots configuration file\n'
+               '   at the specified line number.\n'
+               '\n'
+               '   Example:\n'
+               '     Bot [ViperAltHub] > edit 31\n'
+                     ':set username "myNewNick"\n'
+               '\n'
+               '   See Also "? find", "? rehash"\n'
+               '--------------------------------------\n', 'green')
+
+    def do_exit(self, line):
+        return True
+
     def help_exit(self):
-        print '# exit\n' \
-              '#   Exits the current prompt and returns you to the previous prompt.\n' \
-              '#   See also "? quit"'
+        cprint('--------------------------------------\n'
+               '  exit\n'
+               '--------------------------------------\n'
+               '   Exits the current CLI.\n'
+               '   Also See: "? quit"\n'
+               '--------------------------------------\n', 'green')
 
     def do_quit(self, line):
         exit()

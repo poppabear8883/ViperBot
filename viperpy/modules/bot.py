@@ -59,7 +59,7 @@ class Bot:
             '{{%LISTENADDR%}}':self.LISTENADDR
         }
 
-    def create(self, type):
+    def create(self, type='leaf'):
 
         print 'Creating ' + self.BOTNICK + '.conf ...'
         network_path = self.__INSTALLDIR__ + '/networks/' + self.NETWORK + '/'
