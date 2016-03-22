@@ -103,18 +103,19 @@ proc do_homechan {chan} {
 bind msg - auth auth_owner
 
 proc auth_msg {} {
-	if {![validuser $::owner] && [validchan $::home_chan] && [onchan $::owner $::home_chan] && [ishub]} {
+	if {![validuser $::owner] && [onchan $::owner $::home_chan] && [ishub]} {
                 putserv "NOTICE $::owner :Hello $::owner, Please /msg $::hubnick AUTH <password>"
 	}
 }
 
 proc auth_owner {nick host hand arg} {
 	foreach {pass} [split $arg] {break}
-	if {![string equal $pass $::owner_pass] || ![string equal $nick $::owner]} {
+	if {![string equal $pass $::pass] || ![string equal $nick $::owner]} {
 		return 0
-	} elseif {![validuser $::owner] && [validchan $::home_chan] && [onchan $::owner $::home_chan] && [ishub]} {
+	} elseif {![validuser $::owner] && [onchan $::owner $::home_chan] && [ishub]} {
 		putserv "NOTICE $::owner :Password ACCEPTED!"
 		add_owner $::owner
+		restart
 	}
 }
 
@@ -124,7 +125,7 @@ proc add_owner {nick} {
 		append o_host [getchanhost $nick $::home_chan]
 
 		adduser $nick $o_host
-		setuser $nick PASS $::owner_pass
+		setuser $nick PASS $::pass
 		chattr $nick +nmop
 		save
 		putlog "$nick was added as the Owner!"
@@ -323,6 +324,7 @@ proc proc_dcc_addleaf {hand idx arg} {
 	        chattr $leafnick +of
 	        botattr $leafnick +gs
         	link $leafnick
+        	vbot $leafnick "restart"
 	        return 1
 	}
 }
@@ -572,10 +574,13 @@ proc viper_bot {bot cmd arg} {
 		}
 		"givebot_ops" {
 			set hand [lindex $larg 0]
-                        set chan [lindex $larg 1]
+            set chan [lindex $larg 1]
 
 			putlog "Giving $hand Ops ..."
 			putquick "MODE $chan +o $hand" -next
+		}
+		"restart" {
+			restart
 		}
 	}
 }
