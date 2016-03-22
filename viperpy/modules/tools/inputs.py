@@ -20,7 +20,6 @@ def yesNoInput(question):
     print ' '
     return data
 
-
 def passwordInput(question):
     data = ''
 

@@ -94,6 +94,7 @@ class NetworkCLI(cmd.Cmd):
         cmd.Cmd.__init__(self)
         self.network = network
         self.network_path = network_path
+        os.chdir(network_path)
         self.prompt = colored('Network [' + str(network).title() + ']' + ' > ', "yellow")
 
     def emptyline(self):
@@ -144,7 +145,6 @@ class NetworkCLI(cmd.Cmd):
             print '*** Can\'t find bot "'+botnick+'"! Make sure you have typed it correctly.'
             print '*** Also See: "? list" , "? bot"'
         else:
-            os.chdir(self.network_path)
             botnick = botnick
             bot_path = self.network_path + botnick+'.conf'
             bot = BotCLI(botnick, bot_path)
@@ -166,10 +166,8 @@ class NetworkCLI(cmd.Cmd):
                 print '*** Bot doesn\'t exist for this network.'
                 print '*** Also See: "? list"'
         else:
-            os.chdir(self.network_path)
             print 'Starting ' + botnick + ' ...'
             subprocess.call(['./'+botnick+'.conf'])
-            os.chdir(self.cwd)
 
     def help_start(self):
         cprint('--------------------------------------\n'
@@ -204,6 +202,7 @@ class NetworkCLI(cmd.Cmd):
                '--------------------------------------\n', 'green')
 
     def do_exit(self, line):
+        os.chdir('../')
         return True
 
     def help_exit(self):
@@ -270,8 +269,6 @@ class BotCLI(cmd.Cmd):
                '        Don\'t background, use terminal.\n'
                '     -nc\n'
                '        Don\'t background, show channel info.\n'
-               '     -m\n'
-               '        If you don\'t have a userfile, Create userfile.\n'
                '     -h\n'
                '        Show help\n'
                '     -v\n'

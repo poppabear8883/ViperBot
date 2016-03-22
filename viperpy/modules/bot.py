@@ -1,6 +1,7 @@
 import os
 import signal
 import subprocess
+import time
 
 from tools import helpers
 from tools import inputs
@@ -90,7 +91,7 @@ class Bot:
             if preferipv6 == 'y' or preferipv6 == 'Y':
                 self.PREFERIPV6 = True
 
-        self.IP = inputs.ipInput('IP: ')
+        self.IP = inputs.ipInput('IP [162.243.241.68]: ')
 
         self.PORT = inputs.portInput('Port: ')
 
@@ -103,7 +104,7 @@ class Bot:
               ' attempt to connect to.\n' \
               '\n' \
               'Syntax: server:port'
-        print 'Example: irc.freenode.net:6667,irc.freenode.net:6697\n' \
+        print 'Example: irc.freenode.net:6667,chat.us.freenode.net:6667\n' \
               '\n' \
               'Note: Do Not use spaces!'
         print '---------------------------------------------------------'
@@ -220,19 +221,16 @@ class Bot:
         print '***************************************************'
         print ' '
 
-        if not type == 'hub':
-            if not os.path.exists(self.BOTNICK + '.user'):
-                os.system('touch ' + self.BOTNICK + '.user')
-                os.chmod(self.BOTNICK + '.user', 0600)
-                helpers.appendToFile(self.BOTNICK + '.user',
-                                     '#4v: eggdrop v1.8.0+tclconfig -- ' + self.BOTNICK +' -- written ')
+        if not os.path.exists(self.BOTNICK + '.user'):
+            os.system('touch ' + self.BOTNICK + '.user')
+            os.chmod(self.BOTNICK + '.user', 0600)
+            now = time.strftime("%c")
+            helpers.appendToFile(self.BOTNICK + '.user',
+                                 '#4v: eggdrop v1.8.0+tclconfig -- ' + self.BOTNICK +' -- written ' + now)
 
         os.chdir(self.__INSTALLDIR__)
 
     def start(self, mode=''):
-        network_path = self.__INSTALLDIR__ + '/networks/' + self.NETWORK + '/'
-        os.chdir(network_path)
-
         print 'Starting ' + self.BOTNICK
         os.system('./'+self.BOTNICK+'.conf ' + mode)
 

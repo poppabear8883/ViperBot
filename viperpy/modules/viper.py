@@ -14,6 +14,7 @@ from distutils.file_util import copy_file
 
 from bot import Bot
 from tools import inputs
+from tools.termcolor import colored, cprint
 
 # Users Home Directory
 _HOME = os.getenv("HOME") + '/'
@@ -39,7 +40,7 @@ _CONF = _CONFIG_DIR + '/viperbot.conf'
 
 # todo: check_call() instead of call() -> wrap in try except, catch exceptions
 def build():
-    print '[ViperBot] Installing ... ' + os.getcwd()
+    print colored('[ViperBot] Installing ... ' + os.getcwd(), 'green')
     print ' '
 
     # CD into ViperBot SRC Directory
@@ -57,19 +58,22 @@ def build():
     print ' '
 
     disable_tls = raw_input('Would you like to disable TLS? (y/N): ')
-    print '[ViperBot] Configuring ...'
+
+    print colored('[ViperBot] Configuring ...', 'green')
+
     if disable_tls == 'y' or disable_tls == 'Y':
         subprocess.call(['./configure', '--disable-tls'])
     else:
         subprocess.call('./configure')
 
-    print '[ViperBot] Building ... ' + os.getcwd()
+    print colored('[ViperBot] Building ... ' + os.getcwd(), 'green')
+
     subprocess.call(['make', 'config'])
     subprocess.call(['make', 'static'])
     subprocess.call(['make', 'install', 'DEST=' + _INSTALL_DIR])
 
     if not disable_tls == 'y' or not disable_tls == 'Y':
-        print '[ViperBot] Generating SSL Certificates ...'
+        print colored('[ViperBot] Generating SSL Certificates ...', 'green')
         subprocess.call(['make', 'sslcert', 'DEST=' + _INSTALL_DIR])
 
     if os.path.exists(_INSTALL_DIR):
@@ -81,16 +85,16 @@ def build():
         os.mkdir(_INSTALL_DIR + '/viperpy')
         copy_tree('./viperpy', _INSTALL_DIR + '/viperpy')
 
-        print ' '
-        print '***************************************************************************'
-        print '[ViperBot] Yay! Installion of ViperBot was Successful ...'
-        print '***************************************************************************'
-        print ' '
-        print '[ViperBot] has been Installed to: ' + _INSTALL_DIR
-        print ' '
+        print colored('\n'
+              '***************************************************************************\n'
+              '[ViperBot] Yay! Installion of ViperBot was Successful ...\n'
+              '***************************************************************************\n'
+              '\n'
+              '[ViperBot] has been Installed to: ' + _INSTALL_DIR + '\n'
+              '\n', 'green')
     else:
-        print '[ViperBot] Fatal Error: INSTALL FAILED!'
-        sys.exit(0)
+        print colored('[ViperBot] Fatal Error: INSTALL FAILED!', 'red')
+        sys.exit(1)
 
     # Start the setup process
     print ' '
@@ -100,13 +104,13 @@ def build():
 
     network = newNetwork()
 
-    print ' '
-    print '***************************************************************************'
-    print ' Your new network has been added'
-    print '***************************************************************************'
+    print colored('\n'
+          '***************************************************************************\n'
+          ' Your new network has been added\n'
+          '***************************************************************************\n', 'green')
 
     # All Done!
-    sys.exit(0)
+    # sys.exit(0)
 
 def setup(network):
     print '[Viperbot] Changing to: ' + _INSTALL_DIR
@@ -136,11 +140,28 @@ def setup(network):
     ahubBot = newBot(network, '', 'althub')
     # ahubBot = tmpAltHub()
 
-    hubBot.start('-m')
-    ahubBot.start()
 
-    # Home Directory
-    os.chdir(_HOME)
+    os.chdir(_NETWORKS_DIR + '/' + network)
+    hubBot.start()
+    ahubBot.start()
+    os.chdir(_INSTALL_DIR)
+
+
+    print colored('ViperBot [NOTICE]: \n'
+                  '   Go to IRC using nick '+hubBot.OWNER+'\n'
+                  '   and join ' + hubBot.HOMECHAN + ' .\n'
+                  '   Wait for ' + hubBot.BOTNICK + ' to join.\n'
+                  '   '+hubBot.BOTNICK+' will send you a notice \n'
+                  '   asking you to Authinticate with your password.\n'
+                  '   Once Authenticated '+hubBot.BOTNICK+' will restart.\n'
+                  '   Please Note, This is Normal!', 'cyan')
+
+    while True:
+        yn = inputs.yesNoInput('Are you ready to continue? [y/N]: ')
+        if yn == 'y' or yn == 'Y':
+            break
+        else:
+            print colored('You must complete this step!', 'yellow')
 
     print ' '
     print '***************************************************************************'
@@ -148,6 +169,8 @@ def setup(network):
           ' ' + _INSTALL_DIR + ' and run ./viperbot.py'
     print '***************************************************************************'
     print ' '
+
+    exit()
 
 def newNetwork():
     os.chdir(_INSTALL_DIR)
