@@ -1,10 +1,10 @@
 ViperBot
 ========
 
-Notice: We are currently migrating to Python.
+Notice: Pre-Alpha Stages.
 ----------------------------------------------
 
-So expect everything to be broken until further notice!
+Don't expect much until further notice!
 --------------------------------------------------------
 
 ViperBot is an IRC Bot based from Eggdrop1.8
