@@ -324,6 +324,7 @@ proc proc_dcc_addleaf {hand idx arg} {
 	        chattr $leafnick +of
 	        botattr $leafnick +gs
         	link $leafnick
+        	vbot $leafnick "restart"
 	        return 1
 	}
 }
@@ -573,10 +574,13 @@ proc viper_bot {bot cmd arg} {
 		}
 		"givebot_ops" {
 			set hand [lindex $larg 0]
-                        set chan [lindex $larg 1]
+            set chan [lindex $larg 1]
 
 			putlog "Giving $hand Ops ..."
 			putquick "MODE $chan +o $hand" -next
+		}
+		"restart" {
+			restart
 		}
 	}
 }

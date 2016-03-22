@@ -133,8 +133,6 @@ class NetworkCLI(cmd.Cmd):
 
         os.chdir(self.network_path)
         bot_o.start()
-        bot_o.stop()
-        bot_o.start()
         os.chdir(viper._INSTALL_DIR)
 
         cprint('\n'
