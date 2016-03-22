@@ -7,7 +7,16 @@ from tools import cmd
 from tools.helpers import *
 from tools.termcolor import colored, cprint
 import readline
-
+'''
+    'grey', # debug, might not work
+    'red', # errors
+    'green', # success
+    'yellow', # warnings
+    'blue', # misc, debug
+    'magenta', # important notices
+    'cyan', # notices
+    'white', # default
+'''
 class ViperBotCLI(cmd.Cmd):
 
     intro = colored('v' + viper._VERSION + ' (c) 2016 Poppabear @ Freenode Irc Network\n' \
@@ -40,15 +49,14 @@ class ViperBotCLI(cmd.Cmd):
                '--------------------------------------\n'
                '   Lists the available Networks.\n'
                '   "ls" is an alias for "list"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_network(self, network):
-        '    Switch to the specified network: network <network_name>'
         if network == '':
-            print '*** Missing arguments: "? network" for help'
+            cprint('*** Missing arguments: "? network" for help', 'red')
         elif not os.path.exists(viper._NETWORKS_DIR + '/' + network):
-            print '*** Can\'t find network "'+network+'"! Make sure you have typed it correctly.'
-            print '*** Also See: "? list" , "? network"'
+            cprint('*** Can\'t find network "'+network+'"! Make sure you have typed it correctly.', 'red')
+            cprint('*** Also See: "? list" , "? network"', 'red')
         else:
             network_path = viper._NETWORKS_DIR + '/' + network + '/'
             net = NetworkCLI(network, network_path)
@@ -61,7 +69,7 @@ class ViperBotCLI(cmd.Cmd):
                '   Switches to the Network CLI\n'
                '   "cd" is an alias for "network"\n'
                '   Also See: "? list"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_quit(self, line):
         exit()
@@ -71,7 +79,7 @@ class ViperBotCLI(cmd.Cmd):
                '  quit\n'
                '--------------------------------------\n'
                '   Quits the interactive Shell\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     # Alias's
     do_ls = do_list
@@ -107,7 +115,7 @@ class NetworkCLI(cmd.Cmd):
                     and not 'botnet.conf' in line\
                     and not '.bak' in line\
                     and not '~bak' in line:
-                print line.replace('.conf','')
+                cprint(line.replace('.conf',''), 'cyan')
 
     def help_list(self):
         cprint('--------------------------------------\n'
@@ -115,7 +123,7 @@ class NetworkCLI(cmd.Cmd):
                '--------------------------------------\n'
                '   Lists the available Bots.\n'
                '   "ls" and "bots" are aliases for "list"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_new(self, botnick):
         if botnick == '':
@@ -123,7 +131,25 @@ class NetworkCLI(cmd.Cmd):
         else:
             bot_o = viper.newBot(self.network, botnick, 'leaf')
 
+        os.chdir(self.network_path)
         bot_o.start()
+        bot_o.stop()
+        bot_o.start()
+        os.chdir(viper._INSTALL_DIR)
+
+        cprint('\n'
+               'Leafs must be added to the botnet\n'
+               'in order for them to link properly.\n'
+               '\n'
+               'This can be done either by telnet, or\n'
+               'DCC/CTCP chatting the "Hub" bot.\n'
+               'Partyline command: .addleaf <botnick> <ip> <port>\n'
+               '\n', 'magenta')
+
+        cprint('Please Note:\n'
+               'After the leaf bot is added to the botnet,\n'
+               'it MAY restart!\n'
+               'This is normal!', 'red')
 
     def help_new(self):
         cprint('--------------------------------------\n'
@@ -134,16 +160,16 @@ class NetworkCLI(cmd.Cmd):
                '   not specifing [botnick] will simply\n'
                '   ask for botnick when ran.\n'
                '   Also See: "? list"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
 
     def do_bot(self, botnick):
         '    Switch to the specified bot: bot <botnick>'
         if botnick == '':
-            print '*** Missing argument: "? bot" for help'
+            cprint('*** Missing argument: "? bot" for help', 'red')
         elif not os.path.exists(self.network_path + botnick + '.conf'):
-            print '*** Can\'t find bot "'+botnick+'"! Make sure you have typed it correctly.'
-            print '*** Also See: "? list" , "? bot"'
+            cprint('*** Can\'t find bot "'+botnick+'"! Make sure you have typed it correctly.', 'red')
+            cprint('*** Also See: "? list" , "? bot"', 'red')
         else:
             botnick = botnick
             bot_path = self.network_path + botnick+'.conf'
@@ -157,16 +183,16 @@ class NetworkCLI(cmd.Cmd):
                '   Switches to the Bot CLI\n'
                '   "cd" is an alias for "bot"\n'
                '   Also See: "? list"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_start(self, botnick):
         if botnick == '':
-            print '*** Missing argument: "? start" for help'
+            cprint('*** Missing argument: "? start" for help', 'red')
         elif not os.path.exists(self.network_path + botnick + '.conf'):
-                print '*** Bot doesn\'t exist for this network.'
-                print '*** Also See: "? list"'
+                cprint('*** Bot doesn\'t exist for this network.', 'red')
+                cprint('*** Also See: "? list"', 'red')
         else:
-            print 'Starting ' + botnick + ' ...'
+            cprint('Starting ' + botnick + ' ...', 'cyan')
             subprocess.call(['./'+botnick+'.conf'])
 
     def help_start(self):
@@ -175,31 +201,36 @@ class NetworkCLI(cmd.Cmd):
                '--------------------------------------\n'
                '   Starts the specified bot.\n'
                '   Also See: "? list"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_stop(self, botnick):
-        '    Stops the specified bot: stop <botnick>'
         if botnick == '':
-            print '*** Missing argument: "? stop" for help'
-        elif not os.path.exists(self.network_path + botnick + '.conf'):
-                print '*** Bot doesn\'t exist for this network.'
-                print '*** Also See: "? list"'
+            cprint('*** Missing argument: "? stop" for help', 'red')
+        elif not botnick == 'all' and not os.path.exists(self.network_path + botnick + '.conf'):
+            cprint('*** Bot doesn\'t exist for this network.', 'red')
+            cprint('*** Also See: "? list"', 'red')
         else:
             p = subprocess.Popen(['ps', 'x'], stdout=subprocess.PIPE)
             out, err = p.communicate()
             for line in out.splitlines():
-                if botnick+'.conf' in line:
-                    print 'Stopping ' + botnick + ' ...'
-                    pid = int(line.split(None, 1)[0])
-                    os.kill(pid, signal.SIGTERM)
+                if botnick == 'all':
+                    if '/viperbot/viper' in line:
+                        pid = int(line.split(None, 1)[0])
+                        os.kill(pid, signal.SIGTERM)
+                elif botnick+'.conf' in line:
+                        cprint('Stopping ' + botnick + ' ...', 'cyan')
+                        pid = int(line.split(None, 1)[0])
+                        os.kill(pid, signal.SIGTERM)
 
     def help_stop(self):
         cprint('--------------------------------------\n'
                '  stop <bot>\n'
                '--------------------------------------\n'
                '   Stops the specified bot.\n'
+               '   Specifying "all" will stop all bots.'
+               '   "kill" is an alias for "stop"\n'
                '   Also See: "? list"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_exit(self, line):
         os.chdir('../')
@@ -211,7 +242,7 @@ class NetworkCLI(cmd.Cmd):
                '--------------------------------------\n'
                '   Exits the current CLI.\n'
                '   Also See: "? quit"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_quit(self, line):
         exit()
@@ -221,15 +252,17 @@ class NetworkCLI(cmd.Cmd):
                '  quit\n'
                '--------------------------------------\n'
                '   Quits the interactive Shell\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     # Alias's
     do_ls = do_list
     do_bots = do_list
     do_cd = do_bot
+    do_kill = do_stop
     help_ls = help_list
     help_bots = help_list
     help_cd = help_bot
+    help_kill = help_stop
 
 
 '''
@@ -250,8 +283,6 @@ class BotCLI(cmd.Cmd):
         pass
 
     def do_start(self, mode=''):
-        print 'do_start() [DEBUG]: ' + os.getcwd()
-
         if not mode == '':
             self.bot.start(mode)
         else:
@@ -273,7 +304,7 @@ class BotCLI(cmd.Cmd):
                '        Show help\n'
                '     -v\n'
                '        Show version info, then quit.\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_stop(self, l):
         self.bot.stop()
@@ -283,7 +314,7 @@ class BotCLI(cmd.Cmd):
                '  stop\n'
                '--------------------------------------\n'
                '   Stops the current bot.\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_rehash(self, l):
         self.bot.rehash()
@@ -300,12 +331,12 @@ class BotCLI(cmd.Cmd):
                '   effect until you "rehash" or "restart"\n'
                '\n'
                '   See Also "? edit" , "? find"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_find(self, searchFor):
         dict = findLinesInConf(self.bot_path, searchFor)
         for k, v in dict.items():
-            print '('+str(k)+')' + ' ' + v
+            print '('+colored(str(k), 'magenta')+')' + ' ' + colored(v, 'cyan')
 
     def help_find(self):
         cprint('--------------------------------------\n'
@@ -321,16 +352,16 @@ class BotCLI(cmd.Cmd):
                      '(31) set username "ViperAltHub"\n'
                '\n'
                '   See Also "? edit"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_edit(self, num):
         readline.set_pre_input_hook(lambda: readline.insert_text(getLineInConf(self.bot_path,num))
                                             or readline.redisplay())
 
         if editLineInConf(self.bot_path, num, raw_input(':') or getLineInConf(self.bot_path,num)):
-            print 'Successful'
+            cprint('Success ...', 'green')
         else:
-            print '*** .tmp file does not exist!'
+            cprint('*** .tmp file does not exist!', 'red')
 
         readline.set_pre_input_hook()
 
@@ -346,7 +377,7 @@ class BotCLI(cmd.Cmd):
                      ':set username "myNewNick"\n'
                '\n'
                '   See Also "? find", "? rehash"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_exit(self, line):
         return True
@@ -357,7 +388,7 @@ class BotCLI(cmd.Cmd):
                '--------------------------------------\n'
                '   Exits the current CLI.\n'
                '   Also See: "? quit"\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     def do_quit(self, line):
         exit()
@@ -367,6 +398,6 @@ class BotCLI(cmd.Cmd):
                '  quit\n'
                '--------------------------------------\n'
                '   Quits the interactive Shell\n'
-               '--------------------------------------\n', 'green')
+               '--------------------------------------\n', 'cyan')
 
     # Alias's

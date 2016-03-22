@@ -66,14 +66,14 @@ HIGHLIGHTS = dict(
 
 COLORS = dict(
         list(zip([
-            'grey',
-            'red',
-            'green',
-            'yellow',
-            'blue',
-            'magenta',
-            'cyan',
-            'white',
+            'grey', # debug
+            'red', # errors
+            'green', # success
+            'yellow', # warnings
+            'blue', # misc
+            'magenta', # important notices
+            'cyan', # notices
+            'white', # default
             ],
             list(range(30, 38))
             ))

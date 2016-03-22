@@ -5,9 +5,19 @@ import time
 
 from tools import helpers
 from tools import inputs
+from tools.termcolor import cprint, colored
+
 import viper
-
-
+'''
+    'grey', # debug, might not work
+    'red', # errors
+    'green', # success
+    'yellow', # warnings
+    'blue', # misc, debug
+    'magenta', # important notices
+    'cyan', # notices
+    'white', # default
+'''
 class Bot:
 
     def __init__(self, botnick):
@@ -61,7 +71,7 @@ class Bot:
         }
 
     def new(self, network, botnick='', type='leaf'):
-        print 'new() [DEBUG] Type: ' + type
+        cprint('new() [DEBUG] Type: ' + type, 'blue')
 
         INSTALLDIR = viper._INSTALL_DIR
         os.chdir(INSTALLDIR)
@@ -71,7 +81,7 @@ class Bot:
                 botnick = inputs.alphaNumInput('Bot\'s Nick: ')
                 botnick_conf = INSTALLDIR+'/'+network+'/'+botnick+'.conf'
                 if os.path.exists(botnick_conf):
-                    print 'This botnick already exists!'
+                    cprint('*** This botnick already exists!', 'red')
                     continue
                 else:
                     break
@@ -91,7 +101,7 @@ class Bot:
             if preferipv6 == 'y' or preferipv6 == 'Y':
                 self.PREFERIPV6 = True
 
-        self.IP = inputs.ipInput('IP [162.243.241.68]: ')
+        self.IP = inputs.ipInput('IP: ')
 
         self.PORT = inputs.portInput('Port: ')
 
@@ -99,16 +109,16 @@ class Bot:
         if nat == 'y' or nat == 'Y':
             self.NATIP = inputs.ipInput('NAT IP: ')
 
-        print '---------------------------------------------------------'
-        print ' Here you will list the servers that this bot will\n' \
-              ' attempt to connect to.\n' \
-              '\n' \
-              'Syntax: server:port'
-        print 'Example: irc.freenode.net:6667,chat.us.freenode.net:6667\n' \
-              '\n' \
-              'Note: Do Not use spaces!'
-        print '---------------------------------------------------------'
-        print ' '
+        cprint('---------------------------------------------------------\n'
+        ' Here you will list the servers that this bot will\n'
+        ' attempt to connect to.\n'
+        '\n'
+        ' Syntax: server:port\n'
+        ' Example: irc.freenode.net:6667,chat.us.freenode.net:6667\n'
+        '\n'
+        ' Note: Do Not use spaces!\n'
+        '---------------------------------------------------------\n'
+        '\n', 'magenta')
 
         servers = inputs.serversInput('Servers: ')
         self.SERVERS = servers
@@ -117,9 +127,9 @@ class Bot:
 
     def create(self, type):
 
-        print 'create() [DEBUG] Type: ' + type
+        cprint('create() [DEBUG] Type: ' + type, 'blue')
 
-        print 'Creating ' + self.BOTNICK + '.conf ...'
+        cprint('Creating ' + self.BOTNICK + '.conf ...', 'cyan')
         network_path = self.__INSTALLDIR__ + '/networks/' + self.NETWORK + '/'
         viperbot_conf = self.__INSTALLDIR__ + '/configs/viperbot.conf'
         botnet_conf = self.__INSTALLDIR__ + '/configs/botnet.conf'
@@ -138,17 +148,19 @@ class Bot:
                 os.system('cp ' + botnet_conf + ' ' + network_path)
                 os.rename('botnet.conf', netbotnet_conf)
 
-                print ' '
-                print '# This setting lets you choose the home channel that every bot in your'
-                print '# botnet will idle. We call this the "home" channel.'
-                print '# You will NOT be asked this question again for this network.'
-                print ' '
+                cprint('\n'
+                'This setting lets you choose the home channel that every bot in your\n'
+                'botnet will idle. We call this the "home" channel.\n'
+                'You will NOT be asked this question again for this network.\n'
+                '\n', 'magenta')
+
                 self.HOMECHAN = inputs.channelInput('Home Channel: ')
 
-                print ' '
-                print '# This password is used when you "AUTH" to your botnet for the first time'
-                print '# You will NOT be asked this question again for this network.'
-                print ' '
+                cprint('\n'
+                'This password is used when you "AUTH" to your botnet for the first time\n'
+                'You will NOT be asked this question again for this network.\n'
+                '\n', 'magenta')
+
                 self.PASS = inputs.passwordInput('Password: ')
 
 
@@ -214,12 +226,12 @@ class Bot:
 
         os.chmod(botnick_conf, 0744)
 
-        print ' '
-        print '***************************************************'
-        print ' Done creating ' + self.BOTNICK + '.conf'
-        print ' Location: '+network_path+self.BOTNICK+'.conf'
-        print '***************************************************'
-        print ' '
+        cprint('\n'
+        '***************************************************\n'
+        ' Done creating ' + self.BOTNICK + '.conf\n'
+        ' Location: '+network_path+self.BOTNICK+'.conf\n'
+        '***************************************************\n'
+        '\n', 'green')
 
         if not os.path.exists(self.BOTNICK + '.user'):
             os.system('touch ' + self.BOTNICK + '.user')
@@ -228,10 +240,11 @@ class Bot:
             helpers.appendToFile(self.BOTNICK + '.user',
                                  '#4v: eggdrop v1.8.0+tclconfig -- ' + self.BOTNICK +' -- written ' + now)
 
+
         os.chdir(self.__INSTALLDIR__)
 
     def start(self, mode=''):
-        print 'Starting ' + self.BOTNICK
+        cprint('Starting ' + self.BOTNICK, 'cyan')
         os.system('./'+self.BOTNICK+'.conf ' + mode)
 
     def stop(self):
@@ -239,6 +252,7 @@ class Bot:
         out, err = p.communicate()
         for line in out.splitlines():
             if self.BOTNICK + '.conf' in line:
+                cprint('Stopping ' + self.BOTNICK, 'cyan')
                 pid = int(line.split(None, 1)[0])
                 os.kill(pid, signal.SIGTERM)
                 return True
@@ -250,6 +264,7 @@ class Bot:
         out, err = p.communicate()
         for line in out.splitlines():
             if self.BOTNICK + '.conf' in line:
+                cprint('Rehashing ' + self.BOTNICK, 'cyan')
                 pid = int(line.split(None, 1)[0])
                 os.kill(pid, signal.SIGHUP)
                 return True
