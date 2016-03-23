@@ -112,8 +112,8 @@ class NetworkCLI(cmd.Cmd):
         path = self.network_path
         for line in os.listdir(path):
             if '.conf' in line \
-                    and not 'botnet.conf' in line\
-                    and not '.bak' in line\
+                    and not 'botnet.conf' in line \
+                    and not '.bak' in line \
                     and not '~bak' in line:
                 cprint(line.replace('.conf',''), 'cyan')
 
