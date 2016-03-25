@@ -324,7 +324,16 @@ proc proc_dcc_addleaf {hand idx arg} {
 	        chattr $leafnick +of
 	        botattr $leafnick +gs
         	link $leafnick
-        	vbot $leafnick "restart"
+        	# set _max = 0
+        	# while 1 {
+        	# 	incr _max +1
+
+         #        if {[islinked $leafnick]} {
+         #        	break
+         #        } elseif {_max == 10000} {
+         #        	vbot $leafnick "restart"
+         #        }
+         #    }
 	        return 1
 	}
 }

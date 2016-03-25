@@ -33,7 +33,7 @@ Features in Development:
 GETTING STARTED WITH VIPERBOT
 ----------------------------
 
-### Nothing Yet! ###
+### Download, Extract, Run the python script install.py ###
 
 Credits & Copyrights
 ====================
